@@ -1,0 +1,213 @@
+/* ═══════════════════════════════════════════════
+   HARVESTFLOW — LIVE PIXEL ART (pixel-art.css)
+   Styles for the //Pixel Harvest showcase section,
+   the Profile-rail tiles, and the loader canvas.
+═══════════════════════════════════════════════ */
+
+/* generic canvas treatment — crisp retro pixels */
+canvas[data-pixel]{
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+  border-radius: 10px;
+}
+
+/* ── live label: "• App · Live" ── */
+.px-label{
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--cream-25);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+.px-label::before{
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: px-live 2.2s ease-in-out infinite;
+}
+@keyframes px-live{
+  0%,100%{ opacity: 1; }
+  50%    { opacity: .3; }
+}
+
+/* ═══════════════════════════════════════════════
+   //PIXEL HARVEST — showcase rows
+   Text left (~60%) · large live canvas right (~40%)
+═══════════════════════════════════════════════ */
+.pxshow-intro{
+  font-size: clamp(17px, 2vw, 24px);
+  line-height: 1.5;
+  color: var(--cream-60);
+  max-width: 720px;
+  margin-bottom: clamp(40px, 6vw, 72px);
+  letter-spacing: -.01em;
+}
+.pxshow-intro .hl{ color: var(--cream); }
+
+.pxshow-nav{
+  position: sticky;
+  top: 76px;
+  z-index: 20;
+  display: flex;
+  gap: 9px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  margin: calc(clamp(40px, 6vw, 72px) * -0.45) 0 clamp(28px, 4vw, 46px);
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(19,17,16,.82);
+  backdrop-filter: blur(14px);
+}
+.pxshow-nav::-webkit-scrollbar{ display: none; }
+.pxshow-jump{
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--cream-40);
+  background: rgba(28,25,23,.72);
+  transition: color .25s, border-color .25s, background .25s, transform .25s;
+}
+.pxshow-jump i{
+  font-style: normal;
+  color: var(--terra);
+}
+.pxshow-jump:hover,
+.pxshow-jump.is-active{
+  color: var(--cream);
+  border-color: rgba(110,231,183,.5);
+  background: rgba(5,150,105,.16);
+}
+.pxshow-jump:focus-visible{
+  outline: 2px solid var(--mint);
+  outline-offset: 3px;
+}
+
+.pxshow-list{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pxshow-row{
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 80px);
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--ink-2);
+  padding: clamp(28px, 4vw, 56px);
+  transition: border-color .4s, transform .4s, box-shadow .4s;
+}
+.pxshow-row:hover{
+  border-color: rgba(5,150,105,.55);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 60px rgba(0,0,0,.35);
+}
+.pxshow-row.is-active{
+  border-color: rgba(110,231,183,.72);
+  box-shadow: 0 22px 70px rgba(0,0,0,.38), 0 0 0 1px rgba(110,231,183,.1);
+}
+.pxshow-row.is-active .pxshow-num{ color: var(--amber); }
+
+.pxshow-num{
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .16em;
+  color: var(--terra);
+  display: block;
+  margin-bottom: 16px;
+}
+.pxshow-num::after{
+  content: '———';
+  display: block;
+  color: var(--cream-25);
+  letter-spacing: 0;
+  margin-top: 6px;
+}
+.pxshow-text h3{
+  font-size: clamp(24px, 3vw, 40px);
+  font-weight: 600;
+  letter-spacing: -.02em;
+  line-height: 1.08;
+  margin-bottom: 16px;
+}
+.pxshow-text h3 .serif{ color: var(--mint); }
+.pxshow-text p{
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--cream-40);
+  max-width: 480px;
+  margin-bottom: 20px;
+}
+
+/* right side: framed canvas + label */
+.pxshow-art{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 13px;
+  justify-self: center;
+}
+.pxshow-frame{
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 12px;
+  background: var(--ink);
+  transition: border-color .4s, box-shadow .4s;
+}
+.pxshow-frame canvas{
+  width: 240px;
+  height: 240px;
+}
+.pxshow-row:hover .pxshow-frame{
+  border-color: rgba(5,150,105,.55);
+  box-shadow: 0 0 32px rgba(5,150,105,.16), 0 0 90px rgba(245,158,11,.07);
+}
+
+/* ── responsive: stack text above art, shrink tiles ── */
+@media(max-width: 900px){
+  .pxshow-nav{
+    top: 68px;
+    margin-top: -20px;
+    border-radius: 14px;
+  }
+  .pxshow-jump{
+    min-height: 34px;
+    padding: 0 12px;
+    font-size: 9px;
+  }
+  .pxshow-row{ grid-template-columns: 1fr; }
+  .pxshow-art{ justify-self: start; }
+  .pxshow-frame canvas{ width: 200px; height: 200px; }
+}
+
+/* ── profile rail trio ── */
+.profile-pixels canvas{ border: 1px solid var(--line); }
+
+/* reduced motion: freeze the live dot */
+@media (prefers-reduced-motion: reduce){
+  .px-label::before{ animation: none; }
+  .pxshow-row:hover{ transform: none; }
+  .pxshow-nav{ position: static; }
+}

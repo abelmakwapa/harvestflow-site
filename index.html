@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HarvestFlow — From Yield to Income, Seamlessly</title>
+<meta name="description" content="HarvestFlow is an offline-first agri-tech platform connecting smallholder farmers to markets, insights, and financing across emerging agricultural economies."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 90'%3E%3Crect width='80' height='90' rx='14' fill='%23059669'/%3E%3Cellipse cx='40' cy='30' rx='7' ry='14' fill='white'/%3E%3Cpath d='M40 60 C40 68 15 72 15 72 C40 80 78 72 78 72' stroke='rgba(255,255,255,.8)' stroke-width='5' fill='none'/%3E%3C/svg%3E"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+<script src="https://unpkg.com/split-type"></script>
+<style>
+/* ═══════════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════════ */
+:root{
+  --ink:      #131110;
+  --ink-2:    #1C1917;
+  --ink-3:    #262220;
+  --line:     rgba(253,251,247,.12);
+  --line-2:   rgba(253,251,247,.06);
+  --cream:    #FDFBF7;
+  --cream-60: rgba(253,251,247,.6);
+  --cream-40: rgba(253,251,247,.4);
+  --cream-25: rgba(253,251,247,.25);
+  --green:    #059669;
+  --mint:     #6EE7B7;
+  --terra:    #EA580C;
+  --amber:    #F59E0B;
+  --sans:     'Space Grotesk', sans-serif;
+  --serif:    'Instrument Serif', serif;
+  --mono:     'JetBrains Mono', monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+::selection{background:var(--green);color:var(--cream);}
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--sans);
+  background:var(--ink);
+  color:var(--cream);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+body.no-scroll{overflow:hidden;}
+img,svg,canvas{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;background:none;border:none;color:inherit;cursor:pointer;}
+.serif{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:0;}
+
+/* film grain */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.02 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.mono{font-family:var(--mono);}
+
+/* ═══════════════════════════════════════════════
+   LOADER + PAGE TRANSITION
+═══════════════════════════════════════════════ */
+#loader{
+  position:fixed;inset:0;z-index:10000;background:var(--ink);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
+}
+#loader canvas{image-rendering:pixelated;image-rendering:crisp-edges;}
+.loader-line{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--cream-40);}
+.loader-line .cur{display:inline-block;width:8px;height:14px;background:var(--mint);vertical-align:-2px;animation:blink 1s steps(1) infinite;}
+@keyframes blink{50%{opacity:0;}}
+.loader-log{
+  font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--cream-25);
+  display:flex;flex-direction:column;gap:5px;min-height:48px;text-align:center;
+}
+.loader-log .ok{color:var(--green);}
+.loader-pct{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--green);}
+#transition{
+  position:fixed;inset:0;z-index:9990;background:var(--ink-2);
+  transform:translateY(101%);pointer-events:none;
+  border-top:1px solid var(--green);
+}
+
+/* ═══════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px clamp(20px,4vw,56px);
+  transition:background .4s,border-color .4s,padding .4s;
+  border-bottom:1px solid transparent;
+}
+.nav.scrolled{background:rgba(19,17,16,.86);backdrop-filter:blur(14px);border-bottom-color:var(--line-2);padding-top:14px;padding-bottom:14px;}
+.nav-brand{display:flex;align-items:center;gap:10px;}
+.nav-brand-name{font-size:15px;font-weight:700;letter-spacing:-.02em;}
+.nav-brand-name span{color:var(--mint);}
+.nav-links{display:flex;gap:clamp(10px,1.8vw,26px);align-items:center;}
+.nav-links a{
+  font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.16em;text-transform:lowercase;
+  color:var(--cream-40);transition:color .25s;position:relative;
+}
+.nav-links a i{font-style:normal;color:var(--green);margin-right:6px;}
+.nav-links a::after{
+  content:'';position:absolute;left:0;bottom:-5px;height:1px;width:100%;
+  background:var(--mint);transform:scaleX(0);transform-origin:right;transition:transform .35s;
+}
+.nav-links a:hover{color:var(--cream);}
+.nav-links a:hover::after{transform:scaleX(1);transform-origin:left;}
+.nav-cta{
+  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  padding:9px 18px;border:1px solid var(--line);color:var(--cream);border-radius:100px;
+  position:relative;overflow:hidden;transition:color .35s,border-color .35s;
+}
+.nav-cta i{position:relative;z-index:1;font-style:normal;}
+.nav-cta::before{content:'';position:absolute;inset:0;background:var(--green);transform:translateY(101%);transition:transform .35s;}
+.nav-cta:hover{border-color:var(--green);}
+.nav-cta:hover::before{transform:translateY(0);}
+.nav-burger{display:none;flex-direction:column;gap:5px;padding:4px;}
+.nav-burger span{width:22px;height:1.5px;background:var(--cream);transition:all .3s;display:block;}
+@media(max-width:900px){
+  .nav-links,.nav-cta{display:none;}
+  .nav-burger{display:flex;}
+  .nav-links.open{
+    display:flex;flex-direction:column;align-items:flex-start;gap:22px;
+    position:fixed;inset:0;background:var(--ink);padding:110px 32px;z-index:-1;
+  }
+  .nav-links.open a{font-size:16px;}
+  .nav.menu-open .nav-burger span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+  .nav.menu-open .nav-burger span:nth-child(2){opacity:0;}
+  .nav.menu-open .nav-burger span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+}
+
+/* ═══════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════ */
+.hero{
+  min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:110px clamp(20px,4vw,56px) 0;position:relative;overflow:hidden;
+}
+.hero-glow{
+  position:absolute;width:70vw;height:70vw;border-radius:50%;
+  background:radial-gradient(circle, rgba(5,150,105,.15), transparent 65%);
+  top:-25vw;right:-20vw;pointer-events:none;will-change:transform;
+}
+.hero-field{position:absolute;inset:auto 0 0 0;opacity:.6;pointer-events:none;will-change:transform;}
+.hero-top{position:relative;z-index:2;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:auto;padding-top:7vh;}
+.hero-terminal{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--cream-40);line-height:2.1;}
+.hero-terminal b{color:var(--mint);font-weight:500;}
+.hero-terminal .amber{color:var(--amber);}
+.hero-meta{
+  text-align:right;font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--cream-25);line-height:2.2;
+}
+.hero-meta .avail{display:flex;align-items:center;justify-content:flex-end;gap:9px;color:var(--cream-40);}
+.hero-meta .avail::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(5,150,105,.5);}50%{box-shadow:0 0 0 7px rgba(5,150,105,0);}}
+.hero-title-wrap{position:relative;z-index:2;padding:6vh 0 3vh;}
+.hero-title{
+  font-size:clamp(58px,13.5vw,218px);
+  font-weight:700;line-height:.9;letter-spacing:-.045em;text-transform:uppercase;
+}
+.hero-title .row{display:flex;align-items:baseline;gap:.06em;overflow:hidden;}
+.hero-title .word{display:inline-block;transform:translateY(112%);}
+.hero-title .flow{color:transparent;-webkit-text-stroke:1.5px var(--cream-60);}
+.hero-title .reg{font-size:.14em;font-weight:400;color:var(--green);-webkit-text-stroke:0;letter-spacing:0;align-self:flex-start;margin-top:.35em;}
+body.no-js .hero-title .word,body.no-gsap .hero-title .word{transform:none;}
+.hero-poetic{
+  position:relative;z-index:2;font-size:clamp(19px,2.4vw,30px);font-weight:400;color:var(--cream-60);
+  max-width:640px;line-height:1.4;letter-spacing:-.01em;
+}
+.hero-poetic .serif{color:var(--mint);font-size:1.12em;}
+.hero-poetic .type{color:var(--cream);border-right:2px solid var(--green);padding-right:3px;}
+.hero-sub-row{
+  position:relative;z-index:2;display:flex;justify-content:space-between;align-items:flex-end;
+  gap:32px;flex-wrap:wrap;padding:4vh 0 5vh;
+}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap;}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  padding:16px 30px;border-radius:100px;transition:all .35s;white-space:nowrap;position:relative;overflow:hidden;
+}
+.btn span{position:relative;z-index:1;}
+.btn-solid{background:var(--green);color:var(--cream);}
+.btn-solid::before{content:'';position:absolute;inset:0;background:var(--mint);transform:translateY(101%);transition:transform .35s;}
+.btn-solid:hover{color:var(--ink);transform:translateY(-2px);}
+.btn-solid:hover::before{transform:translateY(0);}
+.btn-ghost{border:1px solid var(--line);color:var(--cream);}
+.btn-ghost:hover{border-color:var(--cream);transform:translateY(-2px);}
+.btn .arr{transition:transform .35s;}
+.btn:hover .arr{transform:translateX(4px);}
+.hero-scroll{
+  position:relative;z-index:2;display:flex;justify-content:center;padding:0 0 24px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.3em;text-transform:lowercase;color:var(--cream-25);
+}
+.hero-scroll span{animation:drift 2.4s ease-in-out infinite;}
+@keyframes drift{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+
+/* marquee band */
+.marquee{
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  overflow:hidden;white-space:nowrap;padding:18px 0;position:relative;z-index:2;background:var(--ink);
+}
+.marquee-track{display:inline-flex;animation:marq 30s linear infinite;will-change:transform;}
+.marquee-item{
+  display:inline-flex;align-items:center;gap:28px;padding-right:28px;
+  font-size:15px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--cream-60);
+}
+.marquee-item .dot{width:6px;height:6px;border-radius:50%;background:var(--terra);flex-shrink:0;}
+.marquee-item em{font-style:normal;color:var(--mint);}
+@keyframes marq{to{transform:translateX(-50%);}}
+
+/* ═══════════════════════════════════════════════
+   SECTION SCAFFOLD
+═══════════════════════════════════════════════ */
+.section{padding:clamp(90px,12vw,170px) clamp(20px,4vw,56px);position:relative;}
+.section-head{
+  display:flex;align-items:baseline;justify-content:space-between;gap:20px;
+  border-bottom:1px solid var(--line);padding-bottom:22px;margin-bottom:clamp(40px,6vw,80px);flex-wrap:wrap;
+}
+.section-head h2{
+  font-size:clamp(30px,4.6vw,64px);font-weight:600;letter-spacing:-.03em;text-transform:uppercase;line-height:1;
+}
+.section-head h2 .serif{text-transform:none;color:var(--mint);}
+.section-head .num{font-family:var(--mono);font-size:12px;color:var(--green);letter-spacing:.2em;}
+
+/* GSAP-driven reveals: visible by default, animated when JS loads */
+.gs-fade{will-change:transform,opacity;}
+
+/* SplitType line masks */
+.split-lines .line{position:relative;overflow:hidden;display:block;}
+.split-lines .line-mask{
+  position:absolute;top:0;right:0;bottom:0;width:100%;
+  background:var(--mask,var(--ink));opacity:.92;pointer-events:none;
+}
+
+/* ═══════════════════════════════════════════════
+   PIXEL DISSOLVE (signature hover — pixel-container)
+═══════════════════════════════════════════════ */
+.pixel-container{position:relative;overflow:hidden;}
+.pixel-grid{
+  position:absolute;inset:0;z-index:5;pointer-events:none;
+  display:grid;grid-template-columns:repeat(10,1fr);grid-template-rows:repeat(6,1fr);
+}
+.pixel-unit{opacity:0;}
+.pixel-unit.active{animation:pxflash .9s steps(2) both;}
+@keyframes pxflash{0%{opacity:0;}25%{opacity:1;}60%{opacity:1;}100%{opacity:0;}}
+
+/* ═══════════════════════════════════════════════
+   PROFILE
+═══════════════════════════════════════════════ */
+.profile-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:clamp(40px,6vw,110px);align-items:start;}
+@media(max-width:900px){.profile-grid{grid-template-columns:1fr;}}
+.profile-lede{
+  font-size:clamp(24px,3.2vw,44px);font-weight:400;line-height:1.34;letter-spacing:-.015em;color:var(--cream-60);
+}
+.profile-lede .hl{color:var(--cream);}
+.profile-lede .g{color:var(--mint);}
+.profile-lede .t{color:var(--terra);}
+.profile-lede .a{color:var(--amber);}
+.profile-lede .serif{font-size:1.1em;}
+.profile-side{display:flex;flex-direction:column;gap:34px;}
+.profile-fact{border-top:1px solid var(--line);padding-top:18px;}
+.profile-fact h4{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:10px;}
+.profile-fact p{font-size:14px;line-height:1.7;color:var(--cream-60);}
+.profile-pixels{display:flex;gap:14px;align-items:flex-end;margin-top:6px;}
+.profile-pixels canvas{image-rendering:pixelated;image-rendering:crisp-edges;border-radius:10px;}
+.profile-pixels figcaption{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--cream-25);margin-top:8px;text-align:center;}
+
+/* ═══════════════════════════════════════════════
+   SELECTED SOLUTIONS
+═══════════════════════════════════════════════ */
+.work-controls{display:flex;gap:18px;align-items:center;flex-wrap:wrap;}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;}
+.filter-chip{
+  font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  padding:7px 15px;border:1px solid var(--line);border-radius:100px;color:var(--cream-40);transition:all .3s;
+}
+.filter-chip:hover{color:var(--cream);border-color:var(--cream-40);}
+.filter-chip.active{background:var(--cream);color:var(--ink);border-color:var(--cream);}
+.view-toggle{display:flex;gap:4px;border:1px solid var(--line);border-radius:100px;padding:4px;}
+.view-toggle button{
+  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:lowercase;
+  padding:7px 16px;border-radius:100px;color:var(--cream-40);transition:all .3s;
+}
+.view-toggle button.active{background:var(--cream);color:var(--ink);}
+
+/* LIST view */
+.work-list .work-item{
+  display:grid;grid-template-columns:110px minmax(0,1.5fr) minmax(0,1fr) auto;
+  gap:clamp(16px,3vw,48px);align-items:center;
+  padding:clamp(26px,3.4vw,44px) 8px;border-bottom:1px solid var(--line);
+  position:relative;transition:padding .4s,opacity .4s;cursor:pointer;
+}
+.work-item.filtered-out{display:none;}
+.work-list .work-item::before{
+  content:'';position:absolute;inset:0;background:var(--ink-2);
+  transform:scaleY(0);transform-origin:bottom;transition:transform .45s cubic-bezier(.19,1,.22,1);z-index:0;
+}
+.work-list .work-item:hover::before{transform:scaleY(1);}
+.work-list .work-item>*{position:relative;z-index:1;}
+.work-list .work-item:hover{padding-left:22px;}
+.work-num{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--green);}
+.work-title{font-size:clamp(21px,2.8vw,38px);font-weight:600;letter-spacing:-.02em;line-height:1.08;transition:color .3s;}
+.work-item:hover .work-title{color:var(--mint);}
+.work-desc{font-size:13px;line-height:1.65;color:var(--cream-40);max-width:380px;}
+.work-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.work-tag{
+  font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+  padding:4px 11px;border:1px solid var(--line);border-radius:100px;color:var(--cream-40);
+}
+.work-view{
+  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:8px;color:var(--cream-40);white-space:nowrap;transition:color .3s;
+}
+.work-item:hover .work-view{color:var(--cream);}
+.work-view .arr{transition:transform .3s;}
+.work-item:hover .work-view .arr{transform:translate(3px,-3px);}
+/* hover marquee strip (View Project // View Project //) */
+.work-item .hover-marquee{
+  position:absolute;left:0;right:0;bottom:0;height:0;overflow:hidden;z-index:2;
+  background:var(--green);transition:height .35s cubic-bezier(.19,1,.22,1);
+  display:flex;align-items:center;white-space:nowrap;
+}
+.work-item:hover .hover-marquee{height:30px;}
+.hover-marquee .hm-track{
+  display:inline-flex;animation:marq 9s linear infinite;
+  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);
+}
+.hover-marquee .hm-track span{padding-right:.6em;}
+@media(max-width:820px){
+  .work-list .work-item{grid-template-columns:1fr;gap:12px;}
+  .work-view{display:none;}
+}
+
+/* GRID view */
+.work-grid{display:none;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:18px;}
+.work-grid .work-card{
+  border:1px solid var(--line);border-radius:14px;padding:22px;
+  display:flex;flex-direction:column;gap:18px;min-height:300px;
+  transition:border-color .4s,transform .4s,box-shadow .4s,background .4s;
+  position:relative;overflow:hidden;cursor:pointer;background:linear-gradient(180deg,var(--ink-2),rgba(28,25,23,.72));
+}
+.work-grid .work-card::before{
+  content:'';position:absolute;inset:0;pointer-events:none;opacity:.45;
+  background:
+    linear-gradient(90deg,rgba(110,231,183,.08) 1px,transparent 1px),
+    linear-gradient(0deg,rgba(253,251,247,.035) 1px,transparent 1px);
+  background-size:28px 28px;
+  mask-image:linear-gradient(180deg,black,transparent 78%);
+}
+.work-grid .work-card::after{
+  content:'';position:absolute;left:-35%;right:-35%;top:-1px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--mint),transparent);
+  transform:translateX(-45%);opacity:0;transition:transform .6s cubic-bezier(.19,1,.22,1),opacity .35s;
+}
+.work-grid .work-card:hover{
+  border-color:rgba(110,231,183,.65);transform:translateY(-6px);
+  box-shadow:0 20px 55px rgba(0,0,0,.32),0 0 0 1px rgba(110,231,183,.08);
+  background:linear-gradient(180deg,rgba(38,34,32,.95),rgba(28,25,23,.78));
+}
+.work-grid .work-card:hover::after{transform:translateX(45%);opacity:1;}
+.work-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;position:relative;z-index:1;}
+.work-card-index{
+  display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border:1px solid rgba(110,231,183,.26);
+  border-radius:10px;background:rgba(5,150,105,.09);font-family:var(--mono);font-size:13px;font-weight:700;
+  color:var(--mint);letter-spacing:.08em;
+}
+.work-card-index::before{content:'/';color:var(--terra);margin-right:1px;}
+.work-cat{
+  font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--cream-40);border:1px solid var(--line);border-radius:100px;padding:6px 10px;
+  background:rgba(19,17,16,.38);
+}
+.work-grid .work-card .work-title{font-size:clamp(20px,2vw,26px);position:relative;z-index:1;}
+.work-grid .work-card .work-desc{max-width:none;position:relative;z-index:1;}
+.work-grid .work-card .work-tags{margin-top:auto;position:relative;z-index:1;}
+.work-grid .work-card .work-tag{background:rgba(19,17,16,.3);}
+.solutions.grid-mode .work-list{display:none;}
+.solutions.grid-mode .work-grid{display:grid;}
+
+/* ═══════════════════════════════════════════════
+   PRODUCT PROOF
+═══════════════════════════════════════════════ */
+.proof{
+  background:linear-gradient(180deg,var(--ink),#0d1612 48%,var(--ink));
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  overflow:hidden;
+}
+.proof-layout{
+  display:grid;
+  grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr);
+  gap:clamp(36px,6vw,96px);
+  align-items:start;
+}
+.proof-copy{position:sticky;top:110px;}
+.proof-kicker{
+  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--green);margin-bottom:16px;
+}
+.proof-lede{
+  font-size:clamp(24px,3.1vw,44px);font-weight:500;line-height:1.18;
+  letter-spacing:-.025em;color:var(--cream);
+}
+.proof-lede .serif{color:var(--mint);font-size:1.08em;}
+.proof-note{
+  margin-top:22px;font-size:14.5px;line-height:1.8;color:var(--cream-60);
+  max-width:520px;
+}
+.proof-stack{
+  margin-top:32px;border:1px solid var(--line);border-radius:18px;
+  background:rgba(28,25,23,.62);overflow:hidden;
+}
+.proof-row{
+  display:flex;justify-content:space-between;gap:18px;padding:17px 18px;
+  border-top:1px solid var(--line-2);
+}
+.proof-row:first-child{border-top:0;}
+.proof-row span{
+  font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cream-40);
+}
+.proof-row b{
+  font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.08em;
+  color:var(--mint);text-align:right;
+}
+.proof-flow{
+  margin-top:22px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;
+}
+.proof-flow-step{background:var(--ink-2);padding:16px 14px;min-height:116px;}
+.proof-flow-step i{
+  font-style:normal;font-family:var(--mono);font-size:10px;color:var(--terra);
+  letter-spacing:.14em;display:block;margin-bottom:18px;
+}
+.proof-flow-step strong{
+  display:block;font-size:15px;line-height:1.2;letter-spacing:-.01em;color:var(--cream);
+}
+.proof-flow-step span{
+  display:block;margin-top:8px;font-size:12px;line-height:1.45;color:var(--cream-40);
+}
+.proof-devices{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+}
+.proof-device{
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:linear-gradient(180deg,rgba(253,251,247,.08),rgba(253,251,247,.02));
+  padding:14px;
+  box-shadow:0 24px 70px rgba(0,0,0,.28);
+}
+.proof-device:nth-child(even){transform:translateY(42px);}
+.proof-device-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:0 2px 12px;
+}
+.proof-device-head h3{
+  font-size:17px;font-weight:600;letter-spacing:-.015em;line-height:1.1;
+}
+.proof-device-head span{
+  font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--amber);white-space:nowrap;
+}
+.proof-phone{
+  border:1px solid rgba(253,251,247,.18);
+  border-radius:16px;
+  background:#050505;
+  padding:10px;
+  overflow:hidden;
+}
+.proof-phone img{
+  width:100%;
+  aspect-ratio:390/844;
+  object-fit:cover;
+  object-position:top center;
+  border-radius:10px;
+  border:1px solid rgba(253,251,247,.12);
+  background:var(--cream);
+}
+@media(max-width:1060px){
+  .proof-layout{grid-template-columns:1fr;}
+  .proof-copy{position:static;}
+  .proof-device:nth-child(even){transform:none;}
+}
+@media(max-width:680px){
+  .proof-devices{grid-template-columns:1fr;}
+  .proof-flow{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:440px){
+  .proof-flow{grid-template-columns:1fr;}
+  .proof-row{flex-direction:column;gap:6px;}
+  .proof-row b{text-align:left;}
+}
+
+/* ═══════════════════════════════════════════════
+   ENGINEERING — pinned horizontal scroll
+═══════════════════════════════════════════════ */
+.eng-intro{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:clamp(36px,6vw,100px);margin-bottom:clamp(50px,7vw,90px);align-items:end;}
+@media(max-width:900px){.eng-intro{grid-template-columns:1fr;}}
+.eng-intro p{font-size:clamp(19px,2.2vw,28px);line-height:1.45;color:var(--cream-60);letter-spacing:-.01em;}
+.eng-intro p .hl{color:var(--cream);}
+.eng-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;}
+.eng-stat{background:var(--ink);padding:26px 24px;}
+.eng-stat b{font-size:clamp(30px,3.4vw,46px);font-weight:600;letter-spacing:-.03em;display:block;color:var(--cream);}
+.eng-stat b i{font-style:normal;color:var(--green);}
+.eng-stat span{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--cream-40);margin-top:6px;display:block;}
+
+.eng-h-wrap{position:relative;overflow:hidden;margin:0 calc(-1 * clamp(20px,4vw,56px));}
+.eng-track{
+  display:flex;gap:20px;padding:10px clamp(20px,4vw,56px) 26px;will-change:transform;
+}
+.phase-card{
+  flex:0 0 clamp(300px,36vw,460px);border:1px solid var(--line);border-radius:20px;
+  background:var(--ink-2);padding:clamp(26px,3vw,40px);display:flex;flex-direction:column;gap:18px;
+  min-height:340px;transition:border-color .35s;
+}
+.phase-card:hover{border-color:var(--green);}
+.phase-card .ph-top{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);}
+.phase-card .ph-num{font-size:12px;letter-spacing:.16em;color:var(--terra);}
+.phase-card .ph-week{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--cream-25);}
+.phase-card h3{font-size:clamp(22px,2.4vw,32px);font-weight:600;letter-spacing:-.02em;}
+.phase-card h3 .serif{color:var(--mint);}
+.phase-card p{font-size:13px;line-height:1.7;color:var(--cream-40);}
+.phase-card .ph-gate{
+  margin-top:auto;border-top:1px solid var(--line);padding-top:14px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--cream-40);line-height:1.7;
+}
+.phase-card .ph-gate b{color:var(--mint);font-weight:500;}
+.eng-progress{
+  height:1px;background:var(--line);margin:0 clamp(20px,4vw,56px);position:relative;
+}
+.eng-progress i{position:absolute;inset:0;background:var(--green);transform:scaleX(0);transform-origin:left;display:block;}
+.eng-hint{
+  font-family:var(--mono);font-size:9px;letter-spacing:.24em;text-transform:lowercase;color:var(--cream-25);
+  text-align:right;padding:12px clamp(20px,4vw,56px) 0;
+}
+
+.eng-commit{margin-top:clamp(40px,6vw,70px);border:1px solid var(--line);border-radius:16px;overflow:hidden;}
+.eng-commit-bar{display:flex;align-items:center;gap:8px;padding:13px 18px;border-bottom:1px solid var(--line);background:var(--ink-2);}
+.eng-commit-bar i{width:9px;height:9px;border-radius:50%;display:block;}
+.eng-commit-bar i:nth-child(1){background:var(--terra);}
+.eng-commit-bar i:nth-child(2){background:var(--amber);}
+.eng-commit-bar i:nth-child(3){background:var(--green);}
+.eng-commit-bar span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--cream-25);margin-left:8px;}
+.eng-commit-body{padding:22px 20px;font-family:var(--mono);font-size:clamp(10px,1.35vw,12.5px);line-height:2.1;color:var(--cream-60);overflow-x:auto;white-space:pre;}
+.eng-commit-body .h{color:var(--green);}
+.eng-commit-body .t{color:var(--amber);}
+.eng-commit-body .s{color:var(--mint);}
+.eng-commit-body .c{color:var(--cream-25);}
+
+/* ═══════════════════════════════════════════════
+   TEAM
+═══════════════════════════════════════════════ */
+.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:820px){.team-grid{grid-template-columns:1fr;}}
+.team-card{
+  border:1px solid var(--line);border-radius:20px;padding:clamp(30px,4vw,48px);
+  display:flex;flex-direction:column;gap:24px;position:relative;overflow:hidden;
+  transition:border-color .4s;background:var(--ink-2);
+}
+.team-card:hover{border-color:var(--green);}
+.team-card .role{
+  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--green);display:flex;justify-content:space-between;align-items:center;
+}
+.team-card .role em{font-style:normal;color:var(--cream-25);}
+.team-name{font-size:clamp(26px,3.4vw,44px);font-weight:600;letter-spacing:-.025em;line-height:1.05;}
+.team-name .serif{color:var(--mint);}
+.team-bio{font-size:14px;line-height:1.75;color:var(--cream-40);max-width:440px;}
+.team-sig{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--cream-25);
+  border-top:1px solid var(--line);padding-top:18px;margin-top:auto;
+}
+.team-sig b{color:var(--amber);font-weight:500;}
+
+/* ═══════════════════════════════════════════════
+   IMPACT (cream)
+═══════════════════════════════════════════════ */
+.impact{background:var(--cream);color:var(--ink-2);--mask:var(--cream);}
+.impact .section-head{border-bottom-color:rgba(28,25,23,.14);}
+.impact .section-head .num{color:var(--terra);}
+.impact .section-head h2 .serif{color:var(--green);}
+.impact-lede{
+  font-size:clamp(26px,3.6vw,52px);font-weight:500;line-height:1.2;letter-spacing:-.025em;max-width:1000px;
+  margin-bottom:clamp(50px,7vw,90px);
+}
+.impact-lede .g{color:var(--green);}
+.impact-lede .t{color:var(--terra);}
+.impact-lede .serif{font-size:1.08em;}
+.impact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(28,25,23,.14);border:1px solid rgba(28,25,23,.14);border-radius:20px;overflow:hidden;}
+@media(max-width:820px){.impact-grid{grid-template-columns:1fr;}}
+.impact-cell{background:var(--cream);padding:clamp(28px,3.6vw,46px);}
+.impact-cell b{font-size:clamp(44px,5.6vw,76px);font-weight:600;letter-spacing:-.04em;line-height:1;display:block;}
+.impact-cell b i{font-style:normal;color:var(--green);}
+.impact-cell h4{
+  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--terra);margin:16px 0 10px;
+}
+.impact-cell p{font-size:13.5px;line-height:1.7;color:rgba(28,25,23,.62);}
+
+/* ═══════════════════════════════════════════════
+   CONTACT
+═══════════════════════════════════════════════ */
+.contact{padding-bottom:0;}
+.contact-marquee{
+  overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:clamp(14px,2vw,26px) 0;margin-bottom:clamp(50px,7vw,90px);
+}
+.contact-marquee .marquee-track{animation-duration:22s;}
+.contact-marquee .mq-word{
+  font-size:clamp(46px,7.2vw,110px);font-weight:700;letter-spacing:-.03em;text-transform:uppercase;
+  padding-right:.45em;display:inline-flex;align-items:center;gap:.45em;
+}
+.contact-marquee .mq-word.stroke{color:transparent;-webkit-text-stroke:1.5px var(--cream-40);}
+.contact-marquee .mq-word .star{color:var(--green);-webkit-text-stroke:0;font-size:.55em;}
+.contact-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:clamp(40px,6vw,110px);align-items:start;padding-bottom:clamp(90px,12vw,160px);}
+@media(max-width:900px){.contact-grid{grid-template-columns:1fr;}}
+.kicker{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--cream-40);}
+.kicker b{color:var(--mint);font-weight:500;}
+.contact-info h3{font-size:clamp(24px,3vw,40px);font-weight:600;letter-spacing:-.02em;line-height:1.15;margin:18px 0 22px;}
+.contact-info h3 .serif{color:var(--mint);}
+.contact-info p{font-size:14.5px;line-height:1.8;color:var(--cream-40);max-width:400px;margin-bottom:34px;}
+.contact-channels{display:flex;flex-direction:column;gap:14px;}
+.contact-channel{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  border-top:1px solid var(--line);padding-top:14px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--cream-60);
+}
+.contact-channel span:first-child{color:var(--cream-25);text-transform:uppercase;font-size:9px;letter-spacing:.2em;}
+.contact-channel a{position:relative;}
+.contact-channel a::after{content:'';position:absolute;left:0;bottom:-3px;height:1px;width:100%;background:var(--mint);transform:scaleX(0);transform-origin:right;transition:transform .35s;}
+.contact-channel a:hover{color:var(--mint);}
+.contact-channel a:hover::after{transform:scaleX(1);transform-origin:left;}
+.form{display:flex;flex-direction:column;gap:26px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
+@media(max-width:640px){.form-row{grid-template-columns:1fr;}}
+.field{display:flex;flex-direction:column;gap:9px;}
+.field label{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--cream-40);}
+.field label i{font-style:normal;color:var(--terra);}
+.field input,.field select,.field textarea{
+  font-family:var(--sans);font-size:15px;color:var(--cream);
+  background:transparent;border:none;border-bottom:1px solid var(--line);
+  padding:10px 2px;outline:none;transition:border-color .3s;border-radius:0;
+  appearance:none;-webkit-appearance:none;
+}
+.field select{cursor:pointer;}
+.field select option{background:var(--ink-2);color:var(--cream);}
+.field textarea{resize:vertical;min-height:96px;line-height:1.6;}
+.field input:focus,.field select:focus,.field textarea:focus{border-bottom-color:var(--green);}
+.form-submit{align-self:flex-start;margin-top:6px;}
+.form-status{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--mint);min-height:16px;}
+
+/* ═══════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════ */
+.footer{border-top:1px solid var(--line);padding:44px clamp(20px,4vw,56px) 34px;}
+.footer-top{display:flex;justify-content:space-between;align-items:center;gap:26px;flex-wrap:wrap;margin-bottom:34px;}
+.footer-links{display:flex;gap:26px;flex-wrap:wrap;}
+.footer-links a{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:lowercase;color:var(--cream-40);transition:color .25s;}
+.footer-links a:hover{color:var(--cream);}
+.footer-bottom{
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  border-top:1px solid var(--line-2);padding-top:22px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--cream-25);
+}
+.footer-bottom .g{color:var(--green);}
+.to-top{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:lowercase;color:var(--cream-40);transition:color .25s;}
+.to-top:hover{color:var(--mint);}
+
+/* ═══════════════════════════════════════════════
+   MOTION SAFETY
+═══════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001s !important;animation-iteration-count:1 !important;transition-duration:.001s !important;}
+  .hero-title .word{transform:none !important;}
+  .marquee-track,.hm-track{animation:none !important;}
+}
+</style>
+<link rel="stylesheet" href="pixel-art.css"/>
+</head>
+<body class="no-scroll">
+
+<!-- ═══════════ LOADER ═══════════ -->
+<div id="loader" aria-hidden="true">
+  <canvas id="px-loader" data-pixel="loader" data-scale="2" style="width:96px;height:96px"></canvas>
+  <div class="loader-line">initialize://<span id="loader-type"></span><span class="cur"></span></div>
+  <div class="loader-log" id="loader-log"></div>
+  <div class="loader-pct" id="loader-pct">000%</div>
+</div>
+<div id="transition" aria-hidden="true"></div>
+
+<!-- ═══════════ NAV ═══════════ -->
+<header class="nav" id="nav">
+  <a class="nav-brand" href="#top" aria-label="HarvestFlow home">
+    <svg width="26" height="30" viewBox="0 0 62 70" fill="none" aria-hidden="true">
+      <path d="M31 58 C31 58 30 44 31 33" stroke="#6EE7B7" stroke-width="2.8" stroke-linecap="round"/>
+      <ellipse cx="31" cy="23" rx="4.5" ry="9" fill="#6EE7B7"/>
+      <ellipse cx="23" cy="29" rx="3.5" ry="7" transform="rotate(-22 23 29)" fill="#6EE7B7" opacity=".6"/>
+      <ellipse cx="39" cy="29" rx="3.5" ry="7" transform="rotate(22 39 29)" fill="#6EE7B7" opacity=".6"/>
+      <path d="M31 58 C31 63 24 65 20 64 C13 62 11 56 15 53 C19 50 28 52 34 56 C40 60 48 64 57 62" stroke="#EA580C" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="57" cy="62" r="3.8" fill="#F59E0B"/>
+    </svg>
+    <span class="nav-brand-name">Harvest<span>Flow</span></span>
+  </a>
+  <nav class="nav-links" id="nav-links">
+    <a href="#profile"><i>001</i>profile</a>
+    <a href="#solutions"><i>002</i>solutions</a>
+    <a href="#proof"><i>003</i>proof</a>
+    <a href="#engineering"><i>004</i>engineering</a>
+    <a href="#pixels"><i>005</i>pixels</a>
+    <a href="#team"><i>006</i>team</a>
+    <a href="#impact"><i>007</i>impact</a>
+    <a href="#contact"><i>008</i>contact</a>
+  </nav>
+  <a class="nav-cta" href="#contact"><i>Get in touch</i></a>
+  <button class="nav-burger" id="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
+</header>
+
+<main id="top">
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <section class="hero">
+    <div class="hero-glow" id="hero-glow"></div>
+    <svg class="hero-field" id="hero-field" viewBox="0 0 1440 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <g stroke="rgba(253,251,247,.05)" stroke-width="1" fill="none">
+        <path d="M0 140 Q360 100 720 140 T1440 140"/>
+        <path d="M0 190 Q360 150 720 190 T1440 190"/>
+        <path d="M0 240 Q360 200 720 240 T1440 240"/>
+      </g>
+      <g stroke="rgba(5,150,105,.14)" stroke-width="1.4" fill="none">
+        <path d="M0 165 Q360 125 720 165 T1440 165"/>
+        <path d="M0 215 Q360 175 720 215 T1440 215"/>
+      </g>
+    </svg>
+
+    <div class="hero-top gs-fade">
+      <div class="hero-terminal">
+        [/> <b>platform</b> : agri-tech · marketplace · finance ]<br/>
+        [/> <b>region</b> : sub-saharan africa &amp; emerging economies ]<br/>
+        [/> <b>status</b> : <span class="amber">piloting — season 2026</span> ]
+      </div>
+      <div class="hero-meta">
+        <div class="avail">Onboarding pilot cooperatives</div>
+        <div>location // Botswana-Gaborone '26</div>
+        <div>last updated&nbsp;&nbsp;07.13.26</div>
+      </div>
+    </div>
+
+    <div class="hero-title-wrap">
+      <h1 class="hero-title" aria-label="Harvest Flow">
+        <span class="row"><span class="word">Harvest</span></span>
+        <span class="row"><span class="word flow">Flow</span><span class="word reg">®</span></span>
+      </h1>
+    </div>
+
+    <p class="hero-poetic gs-fade">HarvestFlow is a <span class="serif">marketplace,</span> an <span class="serif">analyst,</span> and an <span class="serif">ally</span> for smallholder farmers. From yield to income — seamlessly. <span class="type" id="typewriter"></span></p>
+
+    <div class="hero-sub-row gs-fade">
+      <div class="kicker">[/> input : <b>scroll</b> ]</div>
+      <div class="hero-ctas">
+        <a class="btn btn-solid" href="#contact"><span>Request a demo</span> <span class="arr">→</span></a>
+        <a class="btn btn-ghost" href="#solutions"><span>Explore the platform</span></a>
+      </div>
+    </div>
+
+    <div class="hero-scroll"><span>scroll to begin ↓</span></div>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track" id="hero-marquee">
+        <span class="marquee-item"><span class="dot"></span>Offline-first</span>
+        <span class="marquee-item"><span class="dot"></span><em>Farmer owned data</em></span>
+        <span class="marquee-item"><span class="dot"></span>USSD · SMS · App</span>
+        <span class="marquee-item"><span class="dot"></span><em>From yield to income</em></span>
+        <span class="marquee-item"><span class="dot"></span>Built for low bandwidth</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 001 PROFILE ═══════════ -->
+  <section class="section" id="profile">
+    <div class="section-head gs-fade">
+      <h2>//The <span class="serif">Mission</span></h2>
+      <span class="num">[ 001 / profile ]</span>
+    </div>
+    <div class="profile-grid">
+      <p class="profile-lede split-lines">
+        HarvestFlow exists for the <span class="hl">33 million smallholder farmers</span> who grow most of Africa's food and capture the least of its value. We connect them to <span class="g">wholesale buyers</span>, arm them with <span class="hl">predictive harvest analytics</span>, and open doors to <span class="a">fair financing</span> — through a platform engineered to work where networks fail. When the signal drops to <span class="t">2G, SMS, or nothing at all</span>, HarvestFlow keeps working. <span class="serif">Offline-first. USSD-native.</span> Even our logo ships as animated pixel art, light enough for the slowest connection on earth.
+      </p>
+      <aside class="profile-side">
+        <div class="profile-fact gs-fade">
+          <h4>[ Offline-first ]</h4>
+          <p>Every record lives on-device in SQLite first, syncing opportunistically when connectivity returns. A farmer's ledger never waits for a tower.</p>
+        </div>
+        <div class="profile-fact gs-fade">
+          <h4>[ Low-bandwidth by design ]</h4>
+          <p>Price checks over USSD. Bids over SMS. An 8-colour pixel-art identity for splash screens that render in kilobytes, not megabytes.</p>
+        </div>
+        <div class="profile-fact gs-fade">
+          <h4>[ Built to last ]</h4>
+          <p>Tauri + React + Rust core, tested on Android 8 handsets in the field — engineered as legacy-grade infrastructure, not a demo.</p>
+        </div>
+        <figure class="profile-pixels gs-fade" aria-label="Animated pixel art logo variants">
+          <div data-pixel-hover><canvas data-pixel="classic" data-scale="2" style="width:88px;height:88px"></canvas><figcaption>Classic</figcaption></div>
+          <div data-pixel-hover><canvas data-pixel="night" data-scale="2" style="width:88px;height:88px"></canvas><figcaption>Night</figcaption></div>
+          <div data-pixel-hover><canvas data-pixel="harvest" data-scale="2" style="width:88px;height:88px"></canvas><figcaption>Harvest</figcaption></div>
+        </figure>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ═══════════ 002 SOLUTIONS ═══════════ -->
+  <section class="section solutions" id="solutions">
+    <div class="section-head gs-fade" id="work">
+      <h2>//Selected <span class="serif">Solutions</span></h2>
+      <span class="num">[ 002 / the platform ]</span>
+      <div class="work-controls">
+        <div class="filter-row" role="group" aria-label="Filter solutions">
+          <button class="filter-chip active" data-filter="all">All</button>
+          <button class="filter-chip" data-filter="markets">Markets</button>
+          <button class="filter-chip" data-filter="intelligence">Intelligence</button>
+          <button class="filter-chip" data-filter="infrastructure">Infrastructure</button>
+        </div>
+        <div class="view-toggle" role="group" aria-label="View mode">
+          <button class="active" id="btn-list" aria-pressed="true">list</button>
+          <button id="btn-grid" aria-pressed="false">grid</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="work-list" id="work-list"></div>
+    <div class="work-grid" id="work-grid"></div>
+  </section>
+
+  <!-- ═══════════ 003 PRODUCT PROOF ═══════════ -->
+  <section class="section proof" id="proof">
+    <div class="section-head gs-fade">
+      <h2>//Product <span class="serif">Proof</span></h2>
+      <span class="num">[ 003 / real app screens ]</span>
+    </div>
+
+    <div class="proof-layout">
+      <div class="proof-copy">
+        <div class="proof-kicker">[/> harvested from /harvestflow-app ]</div>
+        <p class="proof-lede gs-fade">This is no longer only a pitch. The local HarvestFlow app already carries the core flow: <span class="serif">dashboard, market, grading, finance, and logistics.</span></p>
+        <p class="proof-note gs-fade">Captured from the running React + Tauri mobile app, these screens show the current farmer demo experience and seeded Botswana marketplace data: Grade A maize, verified farmers, Gaborone prices, escrow-aware finance, and route tracking.</p>
+
+        <div class="proof-stack gs-fade" aria-label="HarvestFlow app implementation facts">
+          <div class="proof-row"><span>Target device</span><b>Tecno Spark 8 · 320px · 2G</b></div>
+          <div class="proof-row"><span>App shell</span><b>Tauri 2 · React 19 · TypeScript</b></div>
+          <div class="proof-row"><span>Live routes</span><b>18 implemented screens</b></div>
+          <div class="proof-row"><span>Demo seed</span><b>8 listings · 1 order · 1 route</b></div>
+        </div>
+
+        <div class="proof-flow gs-fade" aria-label="Seeded product flow">
+          <div class="proof-flow-step"><i>01</i><strong>List harvest</strong><span>500kg Grade A maize from a verified Gaborone farmer.</span></div>
+          <div class="proof-flow-step"><i>02</i><strong>Match buyer</strong><span>Marketplace filters by goods, freight, grade, price, and crop.</span></div>
+          <div class="proof-flow-step"><i>03</i><strong>Move order</strong><span>TRK-2026-001 tracks maize from Gaborone to Francistown.</span></div>
+          <div class="proof-flow-step"><i>04</i><strong>Unlock finance</strong><span>Wallet, escrow, loans, and crop insurance connect to sales history.</span></div>
+        </div>
+      </div>
+
+      <div class="proof-devices gs-fade" aria-label="HarvestFlow app screenshots">
+        <article class="proof-device">
+          <div class="proof-device-head"><h3>Farmer cockpit</h3><span>/</span></div>
+          <figure class="proof-phone">
+            <img src="assets/proof-dashboard.png" alt="HarvestFlow mobile dashboard showing income, listings, orders, market prices, and operations"/>
+          </figure>
+        </article>
+        <article class="proof-device">
+          <div class="proof-device-head"><h3>Marketplace</h3><span>/market</span></div>
+          <figure class="proof-phone">
+            <img src="assets/proof-marketplace.png" alt="HarvestFlow marketplace screen with goods and freight toggle, search, filters, and a seeded listing"/>
+          </figure>
+        </article>
+        <article class="proof-device">
+          <div class="proof-device-head"><h3>AI grading</h3><span>/grade</span></div>
+          <figure class="proof-phone">
+            <img src="assets/proof-grade.png" alt="HarvestFlow AI grade screen with crop scanner, maize selector, and recent crop scan results"/>
+          </figure>
+        </article>
+        <article class="proof-device">
+          <div class="proof-device-head"><h3>Finance ledger</h3><span>/finance</span></div>
+          <figure class="proof-phone">
+            <img src="assets/proof-finance.png" alt="HarvestFlow finance screen showing wallet balance, pre-approved harvest loan, and crop insurance"/>
+          </figure>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 004 ENGINEERING ═══════════ -->
+  <section class="section" id="engineering" style="padding-left:0;padding-right:0;">
+    <div style="padding:0 clamp(20px,4vw,56px);">
+      <div class="section-head gs-fade">
+        <h2>//The <span class="serif">Build Journey</span></h2>
+        <span class="num">[ 004 / engineering ]</span>
+      </div>
+      <div class="eng-intro">
+        <p class="gs-fade">We don't ship demos into rural economies. HarvestFlow is built to a published playbook — <span class="hl">every commit convention, branch strategy, bug protocol and design-tweak workflow defined before the first line of code</span> — because software that farmers depend on for income must behave like infrastructure.</p>
+        <div class="eng-stats gs-fade">
+          <div class="eng-stat"><b data-count="18">18</b><span>Months · roadmap</span></div>
+          <div class="eng-stat"><b data-count="6">6</b><span>Phases · gated</span></div>
+          <div class="eng-stat"><b data-count="72">72</b><span>Two-week sprints</span></div>
+          <div class="eng-stat"><b><i>∞</i></b><span>Maintainable</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- horizontal scroll track (pinned & scrubbed on desktop) -->
+    <div class="eng-h-wrap" id="eng-wrap">
+      <div class="eng-track" id="eng-track">
+        <article class="phase-card">
+          <div class="ph-top"><span class="ph-num">PH.01</span><span class="ph-week">WK 1–8</span></div>
+          <h3><span class="serif">Foundation</span></h3>
+          <p>Monorepo scaffold, CI matrix across desktop and Android on every PR, HarvestFlow design tokens, commitlint + husky, SQLite shell booting on Android 8.</p>
+          <div class="ph-gate">[/> gate : <b>ci green on all platforms</b> ]</div>
+        </article>
+        <article class="phase-card">
+          <div class="ph-top"><span class="ph-num">PH.02</span><span class="ph-week">WK 9–20</span></div>
+          <h3><span class="serif">Core Features</span></h3>
+          <p>All seven screens rendering fully offline, sync queue draining on reconnect, bottom navigation, farmer ledger and listings flows complete.</p>
+          <div class="ph-gate">[/> gate : <b>first listing recorded end-to-end</b> ]</div>
+        </article>
+        <article class="phase-card">
+          <div class="ph-top"><span class="ph-num">PH.03</span><span class="ph-week">WK 21–32</span></div>
+          <h3><span class="serif">AI &amp; Finance</span></h3>
+          <p>On-device quality assessment at ≥85% accuracy, live wholesale price feed, microloan MVP with a verified harvest ledger as collateral.</p>
+          <div class="ph-gate">[/> gate : <b>first real buyer bid</b> ]</div>
+        </article>
+        <article class="phase-card">
+          <div class="ph-top"><span class="ph-num">PH.04</span><span class="ph-week">WK 33–44</span></div>
+          <h3><span class="serif">Scale</span></h3>
+          <p>USSD and SMS channels tested on live telco sandboxes, multi-region deployments, push notifications tuned for intermittent connectivity.</p>
+          <div class="ph-gate">[/> gate : <b>first ussd price check in the field</b> ]</div>
+        </article>
+        <article class="phase-card">
+          <div class="ph-top"><span class="ph-num">PH.05</span><span class="ph-week">WK 45–56</span></div>
+          <h3><span class="serif">Hardening</span></h3>
+          <p>Security audit and penetration testing, load tests against harvest-season traffic spikes, store submission and release engineering.</p>
+          <div class="ph-gate">[/> gate : <b>v1.0.0 tag cut and published</b> ]</div>
+        </article>
+        <article class="phase-card">
+          <div class="ph-top"><span class="ph-num">PH.06</span><span class="ph-week">WK 57–∞</span></div>
+          <h3><span class="serif">Legacy</span></h3>
+          <p>Deprecation policy, architecture decision records, LTS branch, external contributors — the point where the platform outlives its authors.</p>
+          <div class="ph-gate">[/> gate : <b>software that outlives its authors</b> ]</div>
+        </article>
+      </div>
+    </div>
+    <div class="eng-progress"><i id="eng-progress-fill"></i></div>
+    <div class="eng-hint">drag / scroll → the roadmap</div>
+
+    <div style="padding:0 clamp(20px,4vw,56px);">
+      <div class="eng-commit gs-fade">
+        <div class="eng-commit-bar"><i></i><i></i><i></i><span>harvestflow — git log --oneline</span></div>
+        <div class="eng-commit-body"><span class="h">a1b2c3d</span> <span class="t">feat</span><span class="c">(</span><span class="s">db</span><span class="c">):</span> add initial sqlite schema — farmer, listings, price_cache
+<span class="h">e4f5g6h</span> <span class="t">feat</span><span class="c">(</span><span class="s">sync</span><span class="c">):</span> implement offline outbox queue with conflict resolution
+<span class="h">i7j8k9l</span> <span class="t">feat</span><span class="c">(</span><span class="s">ussd</span><span class="c">):</span> add price-check flow for 2g feature phones
+<span class="h">m1n2o3p</span> <span class="t">feat</span><span class="c">(</span><span class="s">ai</span><span class="c">):</span> ship on-device quality assessment at 87% accuracy
+<span class="h">q4r5s6t</span> <span class="t">test</span><span class="c">(</span><span class="s">db</span><span class="c">):</span> cargo tests for migrations on in-memory sqlite
+<span class="c">… every phase gates on one question: does this move farmer income up?</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 005 PIXEL HARVEST ═══════════ -->
+  <section class="section" id="pixels">
+    <div class="section-head gs-fade">
+      <h2>//Pixel <span class="serif">Harvest</span></h2>
+      <span class="num">[ 005 / live identities ]</span>
+    </div>
+    <p class="pxshow-intro gs-fade">Seven solutions, seven living identities — <span class="hl">each one drawn on an 8-colour, 64-pixel grid</span>, light enough to ship over a 2G connection. Hover any card to wake it up.</p>
+    <div class="pxshow-nav gs-fade" id="pxshow-nav" aria-label="Navigate Pixel Harvest scenes"></div>
+    <div class="pxshow-list" id="pxshow-list"></div>
+  </section>
+
+  <!-- ═══════════ 006 TEAM ═══════════ -->
+  <section class="section" id="team">
+    <div class="section-head gs-fade">
+      <h2>//The <span class="serif">People</span></h2>
+      <span class="num">[ 006 / leadership ]</span>
+    </div>
+    <div class="team-grid">
+      <article class="team-card pixel-container gs-fade">
+        <div class="role">Chief Executive Officer &amp; Technical Architect <em>s//01</em></div>
+        <h3 class="team-name">Sthando Abel <span class="serif">Makwapa</span></h3>
+        <p class="team-bio">Visionary founder and technical architect behind the Tauri + Rust core, the offline-first sync engine, and the infrastructure that scales from a 2G feature phone to a multi-region cloud. Sthando leads HarvestFlow with a single north star — every decision must move farmer income up.</p>
+        <div class="team-sig">[/> architecture : <b>tauri · rust · sqlite · offline sync</b> ]</div>
+      </article>
+      <article class="team-card pixel-container gs-fade">
+        <div class="role">Chief Technology Officer &amp; Mobile App Build Lead <em>s//02</em></div>
+        <h3 class="team-name">Mooketsi Vincent <span class="serif">Magwaza</span></h3>
+        <p class="team-bio">Mooketsi Vincent was responsible for making and building the HarvestFlow mobile app, turning the platform architecture into a field-ready farmer experience that works across low-bandwidth devices and real harvest workflows.</p>
+        <div class="team-sig">[/> mobile_app : <b>build · interface · field workflows</b> ]</div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ═══════════ 007 IMPACT ═══════════ -->
+  <section class="section impact" id="impact">
+    <div class="section-head gs-fade">
+      <h2>//The <span class="serif">Outcome</span></h2>
+      <span class="num">[ 007 / impact ]</span>
+    </div>
+    <p class="impact-lede split-lines">Post-harvest losses claim up to a third of what smallholders grow. Middlemen claim much of the rest. HarvestFlow returns both — turning <span class="g serif">yield</span> into <span class="t serif">reliable income.</span></p>
+    <div class="impact-grid gs-fade">
+      <div class="impact-cell">
+        <b><i>−</i><span data-count="30">30</span>%</b>
+        <h4>Post-harvest waste</h4>
+        <p>Predictive analytics time the harvest; matched buyers mean produce moves before it spoils in the field or the depot.</p>
+      </div>
+      <div class="impact-cell">
+        <b>+<span data-count="40">40</span><i>%</i></b>
+        <h4>Farmer income</h4>
+        <p>Transparent wholesale pricing and direct buyer matching cut out layers of intermediaries — value returns to the grower.</p>
+      </div>
+      <div class="impact-cell">
+        <b><span data-count="100">100</span><i>%</i></b>
+        <h4>Offline coverage</h4>
+        <p>From flagship Android to a 2G feature phone over USSD — every farmer participates, regardless of signal or device.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 008 CONTACT ═══════════ -->
+  <section class="section contact" id="contact">
+    <div class="section-head gs-fade">
+      <h2>//Say <span class="serif">Hello</span></h2>
+      <span class="num">[ 008 / contact ]</span>
+    </div>
+
+    <div class="contact-marquee" aria-hidden="true">
+      <div class="marquee-track" id="contact-marquee">
+        <span class="mq-word">Get in touch <span class="star">✳</span></span>
+        <span class="mq-word stroke">Get in touch <span class="star">✳</span></span>
+        <span class="mq-word">Get in touch <span class="star">✳</span></span>
+        <span class="mq-word stroke">Get in touch <span class="star">✳</span></span>
+      </div>
+    </div>
+
+    <div class="contact-grid">
+      <div class="contact-info gs-fade">
+        <div class="kicker">[/> input : <b>required</b> ]</div>
+        <h3>Demos, pilots, partnerships — <span class="serif">the field is open.</span></h3>
+        <p>Whether you run a cooperative, source produce at wholesale, fund agricultural innovation, or want to bring HarvestFlow to your region — we'd like to hear from you.</p>
+        <div class="contact-channels">
+          <div class="contact-channel"><span>Email</span><a href="mailto:hello@harvestflow.io">hello@harvestflow.io</a></div>
+          <div class="contact-channel"><span>Partnerships</span><a href="mailto:partners@harvestflow.io">partners@harvestflow.io</a></div>
+          <div class="contact-channel"><span>HQ</span><span>Botswana-Gaborone</span></div>
+        </div>
+      </div>
+
+      <form class="form gs-fade" id="contact-form" novalidate>
+        <div class="form-row">
+          <div class="field">
+            <label for="f-name">Name <i>*</i></label>
+            <input id="f-name" name="name" type="text" placeholder="Your full name" required/>
+          </div>
+          <div class="field">
+            <label for="f-email">Email <i>*</i></label>
+            <input id="f-email" name="email" type="email" placeholder="you@organisation.com" required/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="f-org">Organisation</label>
+            <input id="f-org" name="org" type="text" placeholder="Cooperative, buyer, fund…"/>
+          </div>
+          <div class="field">
+            <label for="f-reason">Reason for request <i>*</i></label>
+            <select id="f-reason" name="reason" required>
+              <option value="" selected disabled>Select one</option>
+              <option>Request a demo</option>
+              <option>Pilot programme</option>
+              <option>Buyer partnership</option>
+              <option>Investment / funding</option>
+              <option>Press / other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-msg">Message <i>*</i></label>
+          <textarea id="f-msg" name="message" placeholder="Tell us about your region, your crops, your buyers…" required></textarea>
+        </div>
+        <button class="btn btn-solid form-submit" type="submit"><span>Send message</span> <span class="arr">→</span></button>
+        <div class="form-status" id="form-status" role="status"></div>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="footer">
+  <div class="footer-top">
+    <a class="nav-brand" href="#top">
+      <svg width="24" height="28" viewBox="0 0 62 70" fill="none" aria-hidden="true">
+        <path d="M31 58 C31 58 30 44 31 33" stroke="#059669" stroke-width="3" stroke-linecap="round"/>
+        <ellipse cx="31" cy="23" rx="4.5" ry="9" fill="#059669"/>
+        <ellipse cx="23" cy="29" rx="3.5" ry="7" transform="rotate(-22 23 29)" fill="#059669" opacity=".6"/>
+        <ellipse cx="39" cy="29" rx="3.5" ry="7" transform="rotate(22 39 29)" fill="#059669" opacity=".6"/>
+        <path d="M31 58 C31 63 24 65 20 64 C13 62 11 56 15 53 C19 50 28 52 34 56 C40 60 48 64 57 62" stroke="#EA580C" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="57" cy="62" r="3.8" fill="#F59E0B"/>
+      </svg>
+      <span class="nav-brand-name">Harvest<span>Flow</span></span>
+    </a>
+    <div class="footer-links">
+      <a href="#profile">profile</a>
+      <a href="#solutions">solutions</a>
+      <a href="#proof">proof</a>
+      <a href="#engineering">engineering</a>
+      <a href="#pixels">pixel harvest</a>
+      <a href="#team">team</a>
+      <a href="#contact">contact</a>
+    </div>
+    <a class="to-top" href="#top">back to top ↑</a>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 HarvestFlow · harvestflow.io · <span class="g">YC S25</span></span>
+    <span>[/> from yield to income — <span class="g">seamlessly</span> ]</span>
+  </div>
+</footer>
+
+<script src="pixel-art.js"></script>
+<script>
+/* ═══════════════════════════════════════════════
+   FEATURE FLAGS — degrade gracefully, never hide content
+═══════════════════════════════════════════════ */
+var HAS_GSAP  = typeof gsap !== 'undefined';
+var HAS_ST    = HAS_GSAP && typeof ScrollTrigger !== 'undefined';
+var HAS_SPLIT = typeof SplitType !== 'undefined';
+var HAS_ANIME = typeof anime !== 'undefined';
+var REDUCED   = matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (HAS_ST) gsap.registerPlugin(ScrollTrigger);
+if (!HAS_GSAP) document.body.classList.add('no-gsap');
+
+/* ═══════════════════════════════════════════════
+   SOLUTIONS DATA
+═══════════════════════════════════════════════ */
+var SOLUTIONS = [
+  { n:'001', cat:'markets', title:'Farmer Mobile App & Insights',
+    desc:'A pocket agronomist. Record harvests, track yield history, and receive advisories tuned to crop, soil and season — all fully functional offline.',
+    tags:['Offline-first','Android 8+','SQLite'] },
+  { n:'002', cat:'markets', title:'Marketplace & Buyer Matching',
+    desc:'Direct lines to wholesale buyers. Transparent pricing, verified bids, and matches made on quality and proximity — not on who you know.',
+    tags:['Wholesale','Verified bids','Transparent pricing'] },
+  { n:'003', cat:'intelligence', title:'Predictive Harvest Analytics',
+    desc:'Know the harvest before it happens. Yield forecasting and price-window prediction tell farmers what to sell, when, and to whom.',
+    tags:['Forecasting','Price windows','Data-driven'] },
+  { n:'004', cat:'markets', title:'Supply Chain & Logistics Tools',
+    desc:'From field to depot to buyer without the black hole in between. Consolidated loads, route coordination, and status every step of the way.',
+    tags:['Logistics','Cold chain','Traceability'] },
+  { n:'005', cat:'intelligence', title:'AI Quality Assessment & Financing',
+    desc:'A photo becomes a grade; a grade becomes collateral. On-device quality scoring unlocks fair pricing and microloan eligibility from a verified ledger.',
+    tags:['On-device AI','≥85% accuracy','Microloans'] },
+  { n:'006', cat:'infrastructure', title:'USSD / SMS Low-Bandwidth Channels',
+    desc:'No smartphone, no problem. Price checks, listings and alerts over USSD and SMS — with a pixel-art identity that renders in kilobytes.',
+    tags:['USSD','SMS','2G-native'] },
+  { n:'007', cat:'infrastructure', title:'Secure Offline-First Backend',
+    desc:'A Rust core with SQLite at the edge and conflict-free sync in the cloud. Farmer data is encrypted, owned by the farmer, and never lost to a dead zone.',
+    tags:['Tauri + Rust','Encrypted','Sync queue'] }
+];
+
+var HM = '<span>View details //&nbsp;</span>'.repeat(14);
+
+(function renderSolutions(){
+  var list = document.getElementById('work-list');
+  var grid = document.getElementById('work-grid');
+  SOLUTIONS.forEach(function(s, i){
+    var tags = s.tags.map(function(t){ return '<span class="work-tag">'+t+'</span>'; }).join('');
+    var item = document.createElement('a');
+    item.className = 'work-item gs-fade';
+    item.href = '#contact';
+    item.dataset.cat = s.cat;
+    item.innerHTML =
+      '<span class="work-num">/ '+s.n+'</span>'+
+      '<div><h3 class="work-title">'+s.title+'</h3><div class="work-tags">'+tags+'</div></div>'+
+      '<p class="work-desc">'+s.desc+'</p>'+
+      '<span class="work-view">View details <span class="arr">↗</span></span>'+
+      '<div class="hover-marquee" aria-hidden="true"><div class="hm-track">'+HM+'</div></div>';
+    list.appendChild(item);
+
+    var card = document.createElement('a');
+    card.className = 'work-card pixel-container';
+    card.href = '#contact';
+    card.dataset.cat = s.cat;
+    card.innerHTML =
+      '<div class="work-card-top">'+
+        '<span class="work-card-index">'+s.n.slice(-2)+'</span>'+
+        '<span class="work-cat">'+s.cat+'</span>'+
+      '</div>'+
+      '<h3 class="work-title">'+s.title+'</h3>'+
+      '<p class="work-desc">'+s.desc+'</p>'+
+      '<div class="work-tags">'+tags+'</div>';
+    grid.appendChild(card);
+  });
+})();
+
+/* ═══════════════════════════════════════════════
+   //PIXEL HARVEST — seven live pixel identities,
+   one per solution, rendered into #pxshow-list
+═══════════════════════════════════════════════ */
+var PIXELS = [
+  { num:'s//01', scene:'app', label:'App · Live',
+    title:'Farmer Mobile <span class="serif">App</span>',
+    desc:'A dashboard that fits in a work glove. Yield bars climb, advisories arrive, and wheat grows right inside the screen — every pixel functional at 2G and below.',
+    tags:['Offline-first','Android 8+','SQLite'] },
+  { num:'s//02', scene:'market', label:'Market · Live',
+    title:'Marketplace <span class="serif">Matching</span>',
+    desc:'A farmer stall, a buyer crate, and a bid tag crossing the route between them. When the match lands, both sides light up — transparent, verified, done.',
+    tags:['Wholesale','Verified bids','Fair price'] },
+  { num:'s//03', scene:'forecast', label:'Forecast · Live',
+    title:'Predictive <span class="serif">Analytics</span>',
+    desc:'Crop rows grow beneath a forecast dashboard while weather shifts, a chart draws forward, and the scan beam marks the best harvest window.',
+    tags:['Forecasting','Price windows','Data-driven'] },
+  { num:'s//04', scene:'logistics', label:'Logistics · Live',
+    title:'Supply Chain <span class="serif">in Motion</span>',
+    desc:'From the field on the left to the depot on the right, the truck keeps rolling and the produce dots keep streaming. No black holes between harvest and handshake.',
+    tags:['Routing','Cold chain','Traceability'] },
+  { num:'s//05', scene:'quality', label:'Quality · Live',
+    title:'AI Grading <span class="serif">&amp; Credit</span>',
+    desc:'Produce rolls through an inspection gate, earns an A+ grade, then unlocks credit. A photo becomes a grade; a graded ledger becomes collateral.',
+    tags:['On-device AI','≥85% accuracy','Microloans'] },
+  { num:'s//06', scene:'ussd', label:'USSD · Live',
+    title:'Low-Bandwidth <span class="serif">Channels</span>',
+    desc:'A feature phone typing out a USSD menu, one mint line at a time, signal waves rippling from the antenna. No smartphone required — no farmer left out.',
+    tags:['USSD','SMS','2G-native'] },
+  { num:'s//07', scene:'vault', label:'Vault · Live',
+    title:'Offline-First <span class="serif">Security</span>',
+    desc:'Ledger blocks save into a local vault while signal towers fade, then an encrypted packet syncs out when the cloud comes back into reach.',
+    tags:['Tauri + Rust','Encrypted','Sync queue'] }
+];
+
+(function renderPixelShowcase(){
+  var wrap = document.getElementById('pxshow-list');
+  var nav = document.getElementById('pxshow-nav');
+  if (!wrap) return;
+  PIXELS.forEach(function(p, i){
+    var tags = p.tags.map(function(t){ return '<span class="work-tag">'+t+'</span>'; }).join('');
+    var plainTitle = p.title.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    var row = document.createElement('article');
+    row.className = 'pxshow-row gs-fade';
+    row.id = 'pixel-scene-' + p.scene;
+    row.tabIndex = -1;
+    row.dataset.pxIndex = String(i);
+    row.setAttribute('data-pixel-hover','');
+    row.innerHTML =
+      '<div class="pxshow-text">'+
+        '<span class="pxshow-num">'+p.num+'</span>'+
+        '<h3>'+p.title+'</h3>'+
+        '<p>'+p.desc+'</p>'+
+        '<div class="work-tags">'+tags+'</div>'+
+      '</div>'+
+      '<div class="pxshow-art">'+
+        '<div class="pxshow-frame"><canvas data-pixel="'+p.scene+'" data-scale="4"></canvas></div>'+
+        '<span class="px-label">'+p.label+'</span>'+
+      '</div>';
+    wrap.appendChild(row);
+
+    if (nav) {
+      var button = document.createElement('button');
+      button.className = 'pxshow-jump';
+      button.type = 'button';
+      button.dataset.pxJump = String(i);
+      button.setAttribute('aria-controls', row.id);
+      button.innerHTML = '<i>'+p.num.replace('s//','')+'</i><span>'+plainTitle.split(' ')[0]+'</span>';
+      nav.appendChild(button);
+    }
+  });
+  if (window.HFPixelArt) HFPixelArt.scan(wrap);
+  setupPixelHarvestMotion(wrap, nav);
+})();
+
+function setupPixelHarvestMotion(wrap, nav){
+  var rows = Array.prototype.slice.call(wrap.querySelectorAll('.pxshow-row'));
+  var buttons = nav ? Array.prototype.slice.call(nav.querySelectorAll('.pxshow-jump')) : [];
+  if (!rows.length) return;
+
+  function setActive(index, animateFocus){
+    rows.forEach(function(row, i){ row.classList.toggle('is-active', i === index); });
+    buttons.forEach(function(btn, i){ btn.classList.toggle('is-active', i === index); });
+    var btn = buttons[index], row = rows[index];
+    if (btn) btn.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'nearest', inline: 'center' });
+    if (animateFocus) animatePixelFocus(row, btn);
+  }
+
+  function animatePixelFocus(row, btn){
+    if (REDUCED || !row) return;
+    var frame = row.querySelector('.pxshow-frame');
+    var title = row.querySelector('h3');
+    var tags = row.querySelectorAll('.work-tag');
+
+    if (HAS_GSAP) {
+      gsap.fromTo(row, { y: 24, scale: .985 }, { y: 0, scale: 1, duration: .72, ease: 'elastic.out(1, .6)', clearProps: 'transform' });
+      gsap.fromTo([title].concat(Array.prototype.slice.call(tags)), { y: 12, opacity: .35 }, { y: 0, opacity: 1, duration: .44, stagger: .035, ease: 'power2.out', clearProps: 'transform,opacity' });
+    }
+    if (HAS_ANIME) {
+      anime.remove([frame, btn]);
+      anime({
+        targets: [frame, btn].filter(Boolean),
+        translateY: [10, 0],
+        scale: [.94, 1],
+        rotate: [-1.2, 0],
+        duration: 760,
+        easing: 'easeOutElastic(1, .62)'
+      });
+      anime({
+        targets: row.querySelectorAll('.px-label, .pxshow-num'),
+        opacity: [.25, 1],
+        duration: 420,
+        delay: anime.stagger(45),
+        easing: 'easeOutQuad'
+      });
+    }
+  }
+
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var index = +btn.dataset.pxJump;
+      var row = rows[index];
+      setActive(index, false);
+      row.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'center' });
+      setTimeout(function(){ animatePixelFocus(row, btn); row.focus({ preventScroll: true }); }, REDUCED ? 0 : 360);
+    });
+  });
+
+  rows.forEach(function(row, index){
+    row.addEventListener('mouseenter', function(){ animatePixelFocus(row, buttons[index]); });
+  });
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) setActive(+entry.target.dataset.pxIndex, false);
+      });
+    }, { threshold: .58, rootMargin: '-12% 0px -28%' });
+    rows.forEach(function(row){ io.observe(row); });
+  } else {
+    setActive(0, false);
+  }
+
+  if (HAS_GSAP && !REDUCED && nav) {
+    gsap.fromTo(buttons, { y: 18, opacity: 0 }, {
+      y: 0, opacity: 1, duration: .55, stagger: .045, ease: 'power3.out',
+      scrollTrigger: HAS_ST ? { trigger: nav, start: 'top 86%' } : undefined,
+      clearProps: 'transform,opacity'
+    });
+  }
+}
+
+/* view toggle — scrolls back to #work like the reference site */
+(function(){
+  var sec = document.querySelector('.solutions');
+  var bL = document.getElementById('btn-list'), bG = document.getElementById('btn-grid');
+  function setMode(gridMode){
+    sec.classList.toggle('grid-mode', gridMode);
+    bL.classList.toggle('active', !gridMode);
+    bG.classList.toggle('active', gridMode);
+    bL.setAttribute('aria-pressed', String(!gridMode));
+    bG.setAttribute('aria-pressed', String(gridMode));
+    setTimeout(function(){
+      document.getElementById('work').scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth' });
+      if (HAS_ST) ScrollTrigger.refresh();
+    }, 250);
+  }
+  bL.addEventListener('click', function(){ setMode(false); });
+  bG.addEventListener('click', function(){ setMode(true); });
+})();
+
+/* filters */
+(function(){
+  var chips = document.querySelectorAll('.filter-chip');
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      chips.forEach(function(c){ c.classList.remove('active'); });
+      chip.classList.add('active');
+      var f = chip.dataset.filter;
+      document.querySelectorAll('.work-item, .work-card').forEach(function(el){
+        el.classList.toggle('filtered-out', f !== 'all' && el.dataset.cat !== f);
+      });
+      if (HAS_ST) ScrollTrigger.refresh();
+    });
+  });
+})();
+
+/* ═══════════════════════════════════════════════
+   PIXEL DISSOLVE — .pixel-container hover flash
+═══════════════════════════════════════════════ */
+(function(){
+  var COLORS = ['#059669','#6EE7B7','#EA580C','#F59E0B','#1C1917','#022c22'];
+  document.querySelectorAll('.pixel-container').forEach(function(box){
+    var grid = document.createElement('div');
+    grid.className = 'pixel-grid';
+    grid.setAttribute('aria-hidden','true');
+    for (var i = 0; i < 60; i++){
+      var u = document.createElement('div');
+      u.className = 'pixel-unit';
+      u.style.background = COLORS[Math.floor(Math.random()*COLORS.length)];
+      u.style.animationDelay = (Math.random()*.35)+'s';
+      grid.appendChild(u);
+    }
+    box.appendChild(grid);
+    var busy = false;
+    box.addEventListener('mouseenter', function(){
+      if (busy || REDUCED) return;
+      busy = true;
+      grid.querySelectorAll('.pixel-unit').forEach(function(u){ u.classList.add('active'); });
+      setTimeout(function(){
+        grid.querySelectorAll('.pixel-unit').forEach(function(u){ u.classList.remove('active'); });
+        busy = false;
+      }, 1300);
+    });
+  });
+})();
+
+/* ═══════════════════════════════════════════════
+   LOADER — initialize:// sequence, then curtain lift
+═══════════════════════════════════════════════ */
+(function(){
+  var word = 'harvestflow';
+  var typeEl = document.getElementById('loader-type');
+  var pctEl  = document.getElementById('loader-pct');
+  var logEl  = document.getElementById('loader-log');
+  var loader = document.getElementById('loader');
+  var logs = [
+    'mounting sqlite ledger …&nbsp;<span class="ok">[ ok ]</span>',
+    'syncing price feed …&nbsp;<span class="ok">[ ok ]</span>',
+    'waking the fields …&nbsp;<span class="ok">[ ok ]</span>'
+  ];
+  var closed = false, li = 0;
+  var DUR = 1700, t0 = performance.now();
+
+  /* wall-clock driven via rAF — immune to background timer throttling */
+  (function tick(now){
+    if (closed) return;
+    var k = Math.min(1, (now - t0) / DUR);
+    typeEl.textContent = word.slice(0, Math.round(word.length * Math.min(1, k * 2.2)));
+    while (li < logs.length && k > .25 + li * .22){
+      var d = document.createElement('div'); d.innerHTML = logs[li++]; logEl.appendChild(d);
+    }
+    var p = Math.round(100 * (1 - Math.pow(1 - k, 2)));
+    pctEl.textContent = String(p).padStart(3,'0') + '%';
+    if (k >= 1) return finish();
+    requestAnimationFrame(tick);
+  })(t0);
+
+  function finish(){
+    if (closed) return;
+    closed = true;
+    typeEl.textContent = word;
+    pctEl.textContent = '100%';
+    while (li < logs.length){
+      var d = document.createElement('div'); d.innerHTML = logs[li++]; logEl.appendChild(d);
+    }
+    var reveal = function(){
+      document.body.classList.remove('no-scroll');
+      heroIntro();
+    };
+    if (HAS_GSAP && !REDUCED && document.visibilityState === 'visible'){
+      gsap.timeline({ delay:.35 })
+        .to(loader, { yPercent:-100, duration:.9, ease:'power3.inOut' })
+        .add(reveal, '-=0.45')
+        .set(loader, { display:'none' });
+    } else {
+      loader.style.display = 'none';
+      reveal();
+    }
+  }
+  /* safety: never trap the user */
+  setTimeout(finish, 4200);
+})();
+
+/* hero entrance */
+function heroIntro(){
+  if (HAS_GSAP && !REDUCED){
+    gsap.to('.hero-title .word', { y:0, duration:1.15, stagger:.1, ease:'expo.out' });
+    gsap.from(['.hero-top','.hero-poetic','.hero-sub-row'], { y:34, opacity:0, duration:.9, stagger:.09, ease:'power3.out', delay:.15, clearProps:'all' });
+  } else {
+    document.querySelectorAll('.hero-title .word').forEach(function(w){ w.style.transform = 'none'; });
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   TYPEWRITER — rotating phrases
+═══════════════════════════════════════════════ */
+(function(){
+  var el = document.getElementById('typewriter');
+  if (REDUCED){ el.textContent = 'Markets, opened.'; return; }
+  var phrases = ['Markets, opened.','Harvests, predicted.','Financing, unlocked.','Signal optional.'];
+  var pi = 0, ci = 0, deleting = false;
+  function tick(){
+    var w = phrases[pi];
+    if (!deleting){
+      el.textContent = w.slice(0, ++ci);
+      if (ci === w.length) return setTimeout(function(){ deleting = true; tick(); }, 2100);
+    } else {
+      el.textContent = w.slice(0, --ci);
+      if (ci === 0){ deleting = false; pi = (pi+1)%phrases.length; }
+    }
+    setTimeout(tick, deleting ? 34 : 68);
+  }
+  setTimeout(tick, 2200);
+})();
+
+/* duplicate marquee tracks for seamless loop */
+['hero-marquee','contact-marquee'].forEach(function(id){
+  var tr = document.getElementById(id);
+  if (tr) tr.innerHTML += tr.innerHTML;
+});
+
+/* ═══════════════════════════════════════════════
+   GSAP SCROLL CHOREOGRAPHY
+═══════════════════════════════════════════════ */
+(function(){
+  var nav = document.getElementById('nav');
+  addEventListener('scroll', function(){ nav.classList.toggle('scrolled', scrollY > 40); }, { passive:true });
+
+  if (!HAS_ST || REDUCED) return;   /* content already visible — enhancements only */
+
+  /* generic fade-ups */
+  gsap.utils.toArray('.gs-fade').forEach(function(el){
+    gsap.from(el, {
+      y: 44, opacity: 0, duration: .9, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 88%' },
+      clearProps: 'transform'
+    });
+  });
+
+  /* hero parallax */
+  gsap.to('#hero-glow', { yPercent: 28, ease:'none', scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:true } });
+  gsap.to('#hero-field', { yPercent: -18, ease:'none', scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:true } });
+  gsap.to('.hero-title', { yPercent: 14, opacity:.25, ease:'none', scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:true } });
+
+  /* SplitType line-mask reveals (the Northington signature) */
+  if (HAS_SPLIT){
+    document.querySelectorAll('.split-lines').forEach(function(el){
+      new SplitType(el, { types: 'lines' });
+      el.querySelectorAll('.line').forEach(function(line){
+        var mask = document.createElement('div');
+        mask.className = 'line-mask';
+        line.appendChild(mask);
+        gsap.to(mask, {
+          width: '0%', ease: 'none',
+          scrollTrigger: { trigger: line, start: 'top 92%', end: 'bottom 68%', scrub: 1 }
+        });
+      });
+    });
+  }
+
+  /* pinned horizontal engineering track (desktop only) */
+  ScrollTrigger.matchMedia({
+    '(min-width: 821px)': function(){
+      var track = document.getElementById('eng-track');
+      var wrap  = document.getElementById('eng-wrap');
+      var dist  = function(){ return track.scrollWidth - wrap.clientWidth; };
+      gsap.to(track, {
+        x: function(){ return -dist(); },
+        ease: 'none',
+        scrollTrigger: {
+          trigger: wrap, start: 'top 18%',
+          end: function(){ return '+=' + dist(); },
+          pin: true, scrub: 1, invalidateOnRefresh: true, anticipatePin: 1
+        }
+      });
+      gsap.to('#eng-progress-fill', {
+        scaleX: 1, ease: 'none',
+        scrollTrigger: {
+          trigger: wrap, start: 'top 18%',
+          end: function(){ return '+=' + dist(); }, scrub: 1
+        }
+      });
+    }
+  });
+
+  /* count-up stats */
+  gsap.utils.toArray('[data-count]').forEach(function(el){
+    var target = +el.dataset.count;
+    var obj = { v: 0 };
+    gsap.to(obj, {
+      v: target, duration: 1.6, ease: 'power2.out',
+      scrollTrigger: { trigger: el, start: 'top 85%' },
+      onUpdate: function(){ el.textContent = Math.round(obj.v); }
+    });
+  });
+})();
+
+/* ═══════════════════════════════════════════════
+   MOBILE MENU
+═══════════════════════════════════════════════ */
+(function(){
+  var nav = document.getElementById('nav'), burger = document.getElementById('nav-burger');
+  var links = document.getElementById('nav-links');
+  burger.addEventListener('click', function(){
+    var open = links.classList.toggle('open');
+    nav.classList.toggle('menu-open', open);
+    document.body.classList.toggle('no-scroll', open);
+  });
+  links.addEventListener('click', function(e){
+    if (e.target.closest('a')){
+      links.classList.remove('open'); nav.classList.remove('menu-open');
+      document.body.classList.remove('no-scroll');
+    }
+  });
+})();
+
+/* ═══════════════════════════════════════════════
+   CONTACT FORM
+═══════════════════════════════════════════════ */
+(function(){
+  var form = document.getElementById('contact-form');
+  var status = document.getElementById('form-status');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (!form.checkValidity()){
+      status.textContent = '//* Error — please resubmit the form *//';
+      status.style.color = 'var(--terra)';
+      return;
+    }
+    /* PLACEHOLDER: wire to your backend / form service (e.g. Formspree, own API) */
+    status.style.color = 'var(--mint)';
+    status.textContent = '//* Success — your message has been received *//';
+    form.reset();
+  });
+})();
+</script>
+</body>
+</html>
