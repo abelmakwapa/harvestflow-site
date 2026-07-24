@@ -20,19 +20,6 @@ export function Hero() {
         </g>
       </svg>
 
-      <div className="hero-top gs-fade">
-        <div className="hero-trust" aria-label="HarvestFlow trust signals">
-          <div className="hero-trust-item"><b>Offline-first</b><span>Works through weak signal</span></div>
-          <div className="hero-trust-item"><b>Verified trade</b><span>Buyer matching + escrow</span></div>
-          <div className="hero-trust-item"><b>Built in Botswana</b><span>Piloting for 2026 season</span></div>
-        </div>
-        <div className="hero-meta">
-          <div className="avail">Onboarding pilot cooperatives</div>
-          <div>Botswana · Gaborone · 2026</div>
-          <div>For cooperatives, buyers &amp; funders</div>
-        </div>
-      </div>
-
       <div className="hero-title-wrap">
         <h1 className="hero-title" aria-label="Harvest Flow">
           <span className="row"><span className="word">Harvest</span></span>

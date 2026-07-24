@@ -13,15 +13,18 @@ export function PixelHarvest() {
 
   useEffect(() => {
     if (!listRef.current) return;
+
     const rows = listRef.current.querySelectorAll(".pxshow-row");
+
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
           if (e.isIntersecting) setActive(Number((e.target as HTMLElement).dataset.pxIndex));
         });
       },
-      { threshold: 0.58, rootMargin: "-12% 0px -28%" }
+      { threshold: 0.5 }
     );
+
     rows.forEach((r) => io.observe(r));
     return () => io.disconnect();
   }, []);
@@ -29,12 +32,13 @@ export function PixelHarvest() {
   const jumpTo = (i: number) => {
     setActive(i);
     const row = listRef.current?.querySelector(`#pixel-scene-${PIXELS[i].scene}`);
-    row?.scrollIntoView({ behavior: "smooth", block: "center" });
+    row?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
   };
 
   return (
     <section className="section" id="pixels">
       <SectionHead title="Pixel" serifWord="Harvest" num="[ 005 / live identities ]" />
+
       <p className="pxshow-intro gs-fade">
         Seven solutions, seven living identities — <span className="hl">each one drawn on an 8-colour, 64-pixel grid</span>, light enough to ship over a 2G connection. Hover any card to wake it up.
       </p>
@@ -69,6 +73,7 @@ export function PixelHarvest() {
               <p>{p.desc}</p>
               <div className="work-tags">{p.tags.map((t) => <span key={t} className="work-tag">{t}</span>)}</div>
             </div>
+
             <div className="pxshow-art">
               <div className="pxshow-frame">
                 <canvas data-pixel={p.scene} data-scale="4" />
