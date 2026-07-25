@@ -1,6 +1,7 @@
 "use client";
 
 import { audienceProfiles } from "@/lib/content";
+import Link from "next/link";
 import AsciiVideo from "@/components/AsciiVideo";
 import Reveal from "@/components/Reveal";
 import { ArrowRight, Check } from "lucide-react";
@@ -14,9 +15,9 @@ export default function LearnClient({ slug }: { slug: string }) {
     <div className="bg-cream text-ink">
       <section className="px-6 pb-12 pt-10 md:pt-14">
         <div className="mx-auto max-w-5xl">
-          <a href="/#ecosystem" className="inline-flex items-center gap-2 font-mono text-sm text-clay transition-colors hover:text-ink">
+          <Link href="/ecosystem" className="inline-flex items-center gap-2 font-mono text-sm text-clay transition-colors hover:text-ink">
             <span aria-hidden="true">{"<"}</span> Back to ecosystem
-          </a>
+          </Link>
 
           <Reveal className="mt-8">
             <div className="flex items-center gap-3">
@@ -76,19 +77,19 @@ export default function LearnClient({ slug }: { slug: string }) {
                 Start free on the marketplace, or talk to our team about an enterprise rollout tailored to your operation.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a
+                <Link
                   href="/contact"
                   className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-lav px-6 py-3.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0"
                 >
                   Talk to sales
                   <ArrowRight className="size-4" aria-hidden="true" />
-                </a>
-                <a
-                  href="/#pricing"
+                </Link>
+                <Link
+                  href="/pricing"
                   className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-cream bg-transparent px-6 py-3.5 text-sm font-semibold text-cream transition-colors hover:bg-cream hover:text-ink"
                 >
                   See pricing
-                </a>
+                </Link>
               </div>
               <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-cream/80">
                 {["No setup fees", "Offline-first", "Escrow-secured"].map((t) => (

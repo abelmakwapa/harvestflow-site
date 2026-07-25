@@ -52,23 +52,6 @@ export const pages: Record<string, PageContent> = {
       },
     ],
   },
-  press: {
-    eyebrow: "Press",
-    title: "Newsroom",
-    intro: "Everything journalists and partners need about HarvestFlow, in one place.",
-    blocks: [
-      {
-        heading: "Latest",
-        body: "Recent announcements from the team.",
-        bullets: ["HarvestFlow closes pre-seed round", "One million tonnes graded on-platform", "USSD trading live in three markets"],
-      },
-      {
-        heading: "Press kit",
-        body: "Logos, facts, and spokespersons.",
-        bullets: ["Brand assets & guidelines", "Company fact sheet", "Media enquiries via /contact"],
-      },
-    ],
-  },
   blog: {
     eyebrow: "Blog",
     title: "Field notes",

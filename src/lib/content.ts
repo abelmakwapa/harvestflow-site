@@ -21,16 +21,16 @@ export interface MegaColumn { heading: string; links: MegaLink[]; }
 export interface NavEntry { label: string; href: string; mega?: { primary: MegaLink[]; secondary: MegaColumn[] }; }
 
 export const navLinks: NavLink[] = [
-  { label: "Ecosystem", href: "/#ecosystem" },
-  { label: "Infrastructure", href: "/#infrastructure" },
-  { label: "B2B Pricing", href: "/#pricing" },
-  { label: "Company", href: "/about" },
+  { label: "Ecosystem", href: "/ecosystem" },
+  { label: "Infrastructure", href: "/infrastructure" },
+  { label: "B2B Pricing", href: "/pricing" },
+  { label: "Company", href: "/company" },
 ];
 
 const helpCol: MegaColumn = {
   heading: "Get help",
   links: [
-    { icon: LifeBuoy, title: "Help Center", sub: "Guides & FAQs", href: "/help" },
+    { icon: LifeBuoy, title: "Help Center", sub: "Guides & FAQs", href: "/ecosystem/how-it-works" },
     { icon: Headphones, title: "Talk to support", sub: "We reply fast", href: "/contact" },
     { icon: Handshake, title: "Talk to sales", sub: "Enterprise plans", href: "/contact" },
   ],
@@ -39,21 +39,21 @@ const helpCol: MegaColumn = {
 export const navEntries: NavEntry[] = [
   {
     label: "Ecosystem",
-    href: "/#ecosystem",
+    href: "/ecosystem",
     mega: {
       primary: [
-        { icon: Sprout, title: "Smallholder & Commercial Farmers", sub: "Aggregate, grade, and sell direct", href: "/learn/farmers", badge: "New" },
-        { icon: Truck, title: "Logistics & Fleet Drivers", sub: "Live bidding & reefer-aware routes", href: "/learn/logistics" },
-        { icon: ShoppingCart, title: "B2B Retail Buyers", sub: "Verified volume, full traceability", href: "/learn/buyers" },
-        { icon: Package, title: "Agricultural Suppliers", sub: "Reach farmers & close deals in-app", href: "/learn/suppliers" },
+        { icon: Sprout, title: "Smallholder & Commercial Farmers", sub: "Aggregate, grade, and sell direct", href: "/ecosystem/farmers", badge: "New" },
+        { icon: Truck, title: "Logistics & Fleet Drivers", sub: "Live bidding & reefer-aware routes", href: "/ecosystem/logistics" },
+        { icon: ShoppingCart, title: "B2B Retail Buyers", sub: "Verified volume, full traceability", href: "/ecosystem/buyers" },
+        { icon: Package, title: "Agricultural Suppliers", sub: "Reach farmers & close deals in-app", href: "/ecosystem/suppliers" },
       ],
       secondary: [
         {
           heading: "Learn",
           links: [
-            { icon: BookOpen, title: "How HarvestFlow works", sub: "The seed-to-shelf flow", href: "/help" },
-            { icon: Grid3x3, title: "Use cases", sub: "By role and region", href: "/use-cases" },
-            { icon: Sparkles, title: "Quality grading", sub: "Algorithmic scoring", href: "/quality-grading" },
+            { icon: BookOpen, title: "How HarvestFlow works", sub: "The seed-to-shelf flow", href: "/ecosystem/how-it-works" },
+            { icon: Grid3x3, title: "Use cases", sub: "By role and region", href: "/ecosystem/use-cases" },
+            { icon: Sparkles, title: "Quality grading", sub: "Algorithmic scoring", href: "/ecosystem/quality-grading" },
           ],
         },
         helpCol,
@@ -62,19 +62,19 @@ export const navEntries: NavEntry[] = [
   },
   {
     label: "Infrastructure",
-    href: "/#infrastructure",
+    href: "/infrastructure",
     mega: {
       primary: [
-        { icon: ShieldCheck, title: "In-App Escrow Vault", sub: "Funds locked until verified delivery", href: "/#infrastructure" },
-        { icon: Star, title: "Universal Rating Protocol", sub: "Mandatory 5-star accountability", href: "/#infrastructure" },
-        { icon: Landmark, title: "Digital Identity & Finance", sub: "A ledger that builds credit", href: "/#infrastructure" },
+        { icon: ShieldCheck, title: "In-App Escrow Vault", sub: "Funds locked until verified delivery", href: "/infrastructure/escrow" },
+        { icon: Star, title: "Universal Rating Protocol", sub: "Mandatory 5-star accountability", href: "/infrastructure/rating-protocol" },
+        { icon: Landmark, title: "Digital Identity & Finance", sub: "A ledger that builds credit", href: "/infrastructure/digital-identity" },
       ],
       secondary: [
         {
           heading: "Learn",
           links: [
-            { icon: ShieldCheck, title: "Security overview", sub: "How escrow protects both sides", href: "/security" },
-            { icon: Scale, title: "Compliance", sub: "BIH & BAM ready", href: "/compliance" },
+            { icon: ShieldCheck, title: "Security overview", sub: "How escrow protects both sides", href: "/infrastructure/security" },
+            { icon: Scale, title: "Compliance", sub: "BIH & BAM ready", href: "/infrastructure/compliance" },
           ],
         },
         helpCol,
@@ -83,25 +83,25 @@ export const navEntries: NavEntry[] = [
   },
   {
     label: "B2B Pricing",
-    href: "/#pricing",
+    href: "/pricing",
     mega: {
       primary: [
-        { icon: ShoppingCart, title: "Basic Retailer", sub: "Free forever", href: "/#pricing" },
-        { icon: BadgeCheck, title: "Enterprise Subscription", sub: "Custom, tailored pricing", href: "/#pricing", badge: "Popular" },
-        { icon: Handshake, title: "Compare plans", sub: "Side by side", href: "/#pricing" },
+        { icon: ShoppingCart, title: "Basic Retailer", sub: "Free forever", href: "/pricing/basic" },
+        { icon: BadgeCheck, title: "Enterprise Subscription", sub: "Custom, tailored pricing", href: "/pricing/enterprise", badge: "Popular" },
+        { icon: Handshake, title: "Compare plans", sub: "Side by side", href: "/pricing/compare" },
       ],
       secondary: [helpCol],
     },
   },
   {
     label: "Company",
-    href: "/about",
+    href: "/company",
     mega: {
       primary: [
-        { icon: Building2, title: "About", sub: "Our mission", href: "/about" },
-        { icon: Users, title: "Careers", sub: "Join the team", href: "/careers" },
-        { icon: FileText, title: "Press", sub: "Newsroom", href: "/press" },
-        { icon: Rss, title: "Blog", sub: "Updates & stories", href: "/blog" },
+        { icon: Building2, title: "About", sub: "Our mission", href: "/company/about" },
+        { icon: Users, title: "Careers", sub: "Join the team", href: "/company/careers" },
+        { icon: FileText, title: "Press", sub: "Newsroom", href: "/company/press" },
+        { icon: Rss, title: "Blog", sub: "Updates & stories", href: "/company/blog" },
       ],
       secondary: [helpCol],
     },

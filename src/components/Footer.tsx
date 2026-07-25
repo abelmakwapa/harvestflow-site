@@ -1,5 +1,6 @@
 import { Sprout, Mail, MessageCircle, Globe } from "lucide-react";
 import { platforms } from "@/lib/content";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -18,14 +19,14 @@ export default function Footer() {
             </p>
             <div className="mt-6 flex gap-2.5">
               {[Mail, MessageCircle, Globe].map((Icon, i) => (
-                <a
+                <Link
                   key={i}
                   href="/contact"
                   className="grid h-10 w-10 place-items-center rounded-xl border border-white/15 text-cream/80 transition-colors hover:border-lav hover:text-lav"
                   aria-label="HarvestFlow contact channel"
                 >
                   <Icon className="size-4" aria-hidden="true" />
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -33,9 +34,9 @@ export default function Footer() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-fog">Product</p>
             <ul className="mt-4 space-y-3 text-sm text-cream/80">
-              <li><a className="transition-colors hover:text-cream" href="/#ecosystem">Ecosystem</a></li>
-              <li><a className="transition-colors hover:text-cream" href="/#infrastructure">Infrastructure</a></li>
-              <li><a className="transition-colors hover:text-cream" href="/#pricing">B2B Pricing</a></li>
+              <li><Link className="transition-colors hover:text-cream" href="/ecosystem">Ecosystem</Link></li>
+              <li><Link className="transition-colors hover:text-cream" href="/infrastructure">Infrastructure</Link></li>
+              <li><Link className="transition-colors hover:text-cream" href="/pricing">B2B Pricing</Link></li>
             </ul>
           </div>
 
@@ -49,10 +50,10 @@ export default function Footer() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-fog">Company</p>
             <ul className="mt-4 space-y-3 text-sm text-cream/80">
-              <li><a className="transition-colors hover:text-cream" href="/about">About</a></li>
-              <li><a className="transition-colors hover:text-cream" href="/careers">Careers</a></li>
-              <li><a className="transition-colors hover:text-cream" href="/press">Press</a></li>
-              <li><a className="transition-colors hover:text-cream" href="/blog">Blog</a></li>
+              <li><Link className="transition-colors hover:text-cream" href="/company/about">About</Link></li>
+              <li><Link className="transition-colors hover:text-cream" href="/company/careers">Careers</Link></li>
+              <li><Link className="transition-colors hover:text-cream" href="/company/press">Press</Link></li>
+              <li><Link className="transition-colors hover:text-cream" href="/company/blog">Blog</Link></li>
             </ul>
           </div>
         </div>
@@ -60,8 +61,8 @@ export default function Footer() {
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-7 sm:flex-row">
           <p className="text-sm text-fog">© 2026 HarvestFlow. All rights reserved.</p>
           <div className="flex items-center gap-6 text-sm text-fog">
-            <a className="transition-colors hover:text-cream" href="/privacy">Privacy Policy</a>
-            <a className="transition-colors hover:text-cream" href="/terms">Terms of Service</a>
+            <Link className="transition-colors hover:text-cream" href="/privacy">Privacy Policy</Link>
+            <Link className="transition-colors hover:text-cream" href="/terms">Terms of Service</Link>
           </div>
         </div>
       </div>

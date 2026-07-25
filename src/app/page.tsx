@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -108,12 +109,12 @@ export default function Home() {
               </Reveal>
               <Reveal delay={0.1}>
                 <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                  <a href="/#ecosystem" className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-lav px-6 py-3.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0">
+                  <Link href="/ecosystem" className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-lav px-6 py-3.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0">
                     Open Marketplace <ArrowRight className="size-4" aria-hidden="true" />
-                  </a>
-                  <a href="/contact" className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-cream bg-cream px-6 py-3.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0">
+                  </Link>
+                  <Link href="/contact" className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-cream bg-cream px-6 py-3.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0">
                     Explore Enterprise Partnerships
-                  </a>
+                  </Link>
                 </div>
               </Reveal>
               <Reveal delay={0.15}>
@@ -278,7 +279,7 @@ export default function Home() {
                               <h3 className="max-w-2xl font-display text-2xl font-semibold tracking-tight md:text-3xl">{p.title}</h3>
                             </div>
                             <a
-                              href={`/learn/${p.slug}`}
+                              href={`/ecosystem/${p.slug}`}
                               className="mt-1 inline-flex shrink-0 items-center gap-1.5 rounded-md bg-ink px-3.5 py-2 font-mono text-sm font-medium text-cream transition-colors hover:bg-ink/90"
                             >
                               {p.ctaLabel}
@@ -411,12 +412,12 @@ export default function Home() {
             </Reveal>
             <Reveal delay={0.1}>
               <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                <a href="/#ecosystem" className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-lav px-6 py-3.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0">
+                <Link href="/ecosystem" className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-lav px-6 py-3.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0">
                   Open Marketplace <ArrowRight className="size-4" aria-hidden="true" />
-                </a>
-                <a href="/contact" className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-transparent px-6 py-3.5 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream">
+                </Link>
+                <Link href="/contact" className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-transparent px-6 py-3.5 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream">
                   Talk to sales
-                </a>
+                </Link>
               </div>
               <div className="mt-8 flex justify-center">
                 <span className="inline-flex items-center gap-3 rounded-full border-2 border-ink bg-paper px-5 py-2.5 text-ink"><Wave className="text-ink" /></span>
