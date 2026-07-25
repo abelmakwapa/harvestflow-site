@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import AsciiVideo from "@/components/AsciiVideo";
+import VideoPreview from "@/components/VideoPreview";
 import Reveal from "@/components/Reveal";
 import {
   Sprout, Truck, ShoppingCart, Package, ShieldCheck, Star, Landmark, MapPin, Wallet,
@@ -18,6 +19,10 @@ import {
 } from "@/lib/content";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const asciiPalettes: Record<string, string> = {
+  farmers: "^></",
+};
 
 function Wave({ className = "" }: { className?: string }) {
   return (
@@ -247,6 +252,7 @@ export default function Home() {
               <div className="flex flex-col gap-20">
                 {audienceProfiles.map((p) => {
                   const Icon = p.icon;
+                  const usesNativeVideo = p.slug === "logistics" || p.slug === "suppliers";
                   return (
                     <article
                       key={p.slug}
@@ -257,13 +263,15 @@ export default function Home() {
                     >
                       <Reveal>
                         <div className="mb-7 overflow-hidden rounded-2xl border border-line bg-paper shadow-sm">
-                          <AsciiVideo
-                            src={p.video}
-                            palette={p.slug === "farmers" || p.slug === "logistics" ? "^></" : ">"}
-                            monochrome={p.slug === "logistics"}
-                            whiteCutoff={p.slug === "logistics" ? 245 : undefined}
-                            label={p.title}
-                          />
+                          {usesNativeVideo ? (
+                            <VideoPreview src={p.video} label={p.title} />
+                          ) : (
+                            <AsciiVideo
+                              src={p.video}
+                              palette={asciiPalettes[p.slug] ?? ">"}
+                              label={p.title}
+                            />
+                          )}
                         </div>
                       </Reveal>
                       <Reveal delay={0.05}>

@@ -3,6 +3,7 @@
 import { audienceProfiles } from "@/lib/content";
 import Link from "next/link";
 import AsciiVideo from "@/components/AsciiVideo";
+import VideoPreview from "@/components/VideoPreview";
 import Reveal from "@/components/Reveal";
 import { ArrowRight, Check } from "lucide-react";
 
@@ -10,6 +11,7 @@ export default function LearnClient({ slug }: { slug: string }) {
   const p = audienceProfiles.find((x) => x.slug === slug);
   if (!p) return null;
   const Icon = p.icon;
+  const usesNativeVideo = p.slug === "logistics" || p.slug === "suppliers";
 
   return (
     <div className="bg-cream text-ink">
@@ -34,7 +36,11 @@ export default function LearnClient({ slug }: { slug: string }) {
 
           <Reveal delay={0.1} className="mt-10">
             <div className="overflow-hidden rounded-[1.75rem] border-2 border-ink bg-paper shadow-[0_24px_60px_-30px_rgba(0,0,0,0.45)]">
-              <AsciiVideo src={p.video} symbol=">" label={p.title} />
+              {usesNativeVideo ? (
+                <VideoPreview src={p.video} label={p.title} />
+              ) : (
+                <AsciiVideo src={p.video} symbol=">" label={p.title} />
+              )}
             </div>
           </Reveal>
         </div>

@@ -10,6 +10,7 @@ interface AsciiVideoProps {
   gridWidth?: number;
   glyphScale?: number;
   whiteCutoff?: number;
+  contrast?: number;
   className?: string;
   label?: string;
 }
@@ -25,6 +26,7 @@ export default function AsciiVideo({
   gridWidth = 149,
   glyphScale = 8,
   whiteCutoff = 230,
+  contrast = 1,
   className = "",
   label,
 }: AsciiVideoProps) {
@@ -114,12 +116,13 @@ export default function AsciiVideo({
 
       const pixels = imageData.data;
       const paletteLength = glyphs.length;
+      const contrastFactor = Math.min(3, Math.max(0, contrast));
       for (let y = 0; y < outputHeight; y += 1) {
         for (let x = 0; x < outputWidth; x += 1) {
           const pixelIndex = (y * outputWidth + x) * 4;
-          const red = pixels[pixelIndex];
-          const green = pixels[pixelIndex + 1];
-          const blue = pixels[pixelIndex + 2];
+          const red = Math.round(Math.min(255, Math.max(0, (pixels[pixelIndex] - 128) * contrastFactor + 128)));
+          const green = Math.round(Math.min(255, Math.max(0, (pixels[pixelIndex + 1] - 128) * contrastFactor + 128)));
+          const blue = Math.round(Math.min(255, Math.max(0, (pixels[pixelIndex + 2] - 128) * contrastFactor + 128)));
           const luminance = 0.299 * red + 0.587 * green + 0.114 * blue;
 
           if (luminance < whiteCutoff) {
@@ -210,7 +213,7 @@ export default function AsciiVideo({
       video.pause();
       stopLoop();
     };
-  }, [glyphs, glyphScale, gridWidth, monochrome, src, whiteCutoff]);
+  }, [contrast, glyphs, glyphScale, gridWidth, monochrome, src, whiteCutoff]);
 
   const accessibleLabel = label ? `ASCII video stream: ${label}` : "ASCII video stream";
 
