@@ -42,7 +42,7 @@ export default function Home() {
   const [active, setActive] = useState(0);
   const [activeId, setActiveId] = useState(audienceProfiles[0].slug);
 
-  const articleRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const articleRefs = useRef<Record<string, HTMLElement | null>>({});
   const navItemRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
   const indicatorRef = useRef<HTMLDivElement>(null);
   const activeIdRef = useRef(activeId);
@@ -256,7 +256,13 @@ export default function Home() {
                     >
                       <Reveal>
                         <div className="mb-7 overflow-hidden rounded-2xl border border-line bg-paper shadow-sm">
-                          <AsciiVideo src={p.video} symbol=">" label={p.title} />
+                          <AsciiVideo
+                            src={p.video}
+                            palette={p.slug === "farmers" || p.slug === "logistics" ? "^></" : ">"}
+                            monochrome={p.slug === "logistics"}
+                            whiteCutoff={p.slug === "logistics" ? 245 : undefined}
+                            label={p.title}
+                          />
                         </div>
                       </Reveal>
                       <Reveal delay={0.05}>
