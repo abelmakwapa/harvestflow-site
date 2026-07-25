@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASCII Video Matrix | Technical Documentation & Component</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+            --border-color: #e0e0e0;
+            --shadow-sm: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Google Sans', 'Roboto', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* Documentation Styling */
+        .docs-section {
+            max-width: 800px;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-top: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        p, li {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        code {
+            background: #f1f3f4;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            color: #202124;
+        }
+
+        /* Upload Container */
+        .upload-container {
+            background: #f8f9fa;
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            transition: background 0.2s ease;
+        }
+
+        .upload-container:hover {
+            background: #f1f3f4;
+        }
+
+        input[type="file"] {
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        /* Interactive Controls */
+        .controls-panel {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="range"] {
+            width: 180px;
+            cursor: pointer;
+        }
+
+        input[type="text"] {
+            width: 50px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1rem;
+            padding: 0.2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+        /* Workspace Grid */
+        .demo-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .panel {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 8px;
+            background: #000000;
+        }
+
+        #render-canvas {
+            width: 100%;
+            background: #ffffff;
+            border-radius: 8px;
+        }
+
+        #processing-canvas {
+            display: none; 
+        }
+
+        @media (max-width: 900px) {
+            .demo-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="docs-section">
+            <h1>Real-Time ASCII Video Matrix</h1>
+            <p>This documentation outlines the architectural pipeline for converting high-resolution video frame data into a responsive, single-character text matrix utilizing the browser HTML5 Canvas API.</p>
+            
+            <h2>The Thought Process & Architecture</h2>
+            <ul>
+                <li><strong>Monospace Alignment:</strong> To achieve structural grid integrity, the output must render using strict monospace font rules. By utilizing a visible 2D canvas context to draw individual text tokens at precise grid configurations, we bypass heavy DOM layouts entirely, locking in high-performance rendering.</li>
+                <li><strong>Shade Relativity via Color Injection:</strong> Instead of manipulating character densities to suggest contrast, this architecture enforces structural uniformity using a single continuous symbol (e.g., <code>&lt;</code>). Contrast depth is mapped dynamically by applying the source pixel's exact color metrics directly to the character fill state.</li>
+                <li><strong>The Ghost Masking Technique:</strong> In high-contrast frames containing white backgrounds or white apparel, rendering symbols across light zones diminishes the core silhouettes. Introducing an explicit luminance evaluation filter lets us discard frames exceeding a designated threshold—leaving light sections untouched while capturing the dark profiles.</li>
+                <li><strong>Downscaling for Computation Efficiency:</strong> Passing multi-million pixel buffers frame-by-frame creates extreme rendering bottlenecks. We process frames via an isolated, hidden downscaled instance (configured to 149x84 blocks match-linked to the reference layout) before mapping text transformations to the screen coordinates.</li>
+            </ul>
+
+            <h2>Local Testing Guide</h2>
+            <p>To safely test local production videos without facing browser Cross-Origin Resource Sharing (CORS) blocks, utilize the integrated file scanner block below. Uploading a video generates a protected browser Blob memory link, bypassing the local asset security sandbox entirely without requiring an active hosting stack.</p>
+        </div>
+
+        <div class="upload-container">
+            <input type="file" id="video-upload" accept="video/mp4,video/webm">
+        </div>
+
+        <div class="controls-panel">
+            <div class="control-group">
+                <label>Target Character</label>
+                <input type="text" id="char-input" value="<" maxlength="1">
+            </div>
+            
+            <div class="control-group">
+                <label>Resolution Width: <span id="res-val">149</span>px</label>
+                <input type="range" id="res-slider" min="50" max="250" value="149">
+            </div>
+
+            <div class="control-group">
+                <label>Character Size: <span id="size-val">8</span>px</label>
+                <input type="range" id="size-slider" min="4" max="16" value="8">
+            </div>
+
+            <div class="control-group">
+                <label>White Cutoff Threshold: <span id="white-val">230</span></label>
+                <input type="range" id="white-slider" min="100" max="255" value="230">
+            </div>
+        </div>
+
+        <div class="demo-container">
+            <div class="panel">
+                <div class="panel-header">Source Video Stream</div>
+                <video id="source-video" muted playsinline loop></video>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <span>ASCII Matrix Viewport</span>
+                    <span id="fps-counter" style="color: #1a73e8; font-family: monospace;">0 FPS</span>
+                </div>
+                <canvas id="render-canvas"></canvas>
+            </div>
+        </div>
+
+        <canvas id="processing-canvas"></canvas>
+    </div>
+
+    <script>
+        const videoUpload = document.getElementById('video-upload');
+        const video = document.getElementById('source-video');
+        
+        const processCanvas = document.getElementById('processing-canvas');
+        const processCtx = processCanvas.getContext('2d', { willReadFrequently: true });
+        
+        const renderCanvas = document.getElementById('render-canvas');
+        const renderCtx = renderCanvas.getContext('2d');
+        
+        const fpsCounter = document.getElementById('fps-counter');
+
+        // Parameter Interface Hooks
+        const charInput = document.getElementById('char-input');
+        const resSlider = document.getElementById('res-slider');
+        const resVal = document.getElementById('res-val');
+        const sizeSlider = document.getElementById('size-slider');
+        const sizeVal = document.getElementById('size-val');
+        const whiteSlider = document.getElementById('white-slider');
+        const whiteVal = document.getElementById('white-val');
+
+        let animationFrameId;
+        let lastTime = performance.now();
+        let frameCount = 0;
+
+        function renderASCII() {
+            if (video.paused || video.ended) {
+                animationFrameId = requestAnimationFrame(renderASCII);
+                return;
+            }
+
+            // Extract real-time parameter configurations
+            const targetSymbol = charInput.value || '<';
+            const gridWidth = parseInt(resSlider.value);
+            const glyphScale = parseInt(sizeSlider.value);
+            const whiteCutoff = parseInt(whiteSlider.value);
+            
+            const frameRatio = video.videoHeight / video.videoWidth || (84/149);
+            const gridHeight = Math.floor(gridWidth * frameRatio);
+
+            // Re-map processing configurations
+            processCanvas.width = gridWidth;
+            processCanvas.height = gridHeight;
+            
+            renderCanvas.width = gridWidth * glyphScale;
+            renderCanvas.height = gridHeight * glyphScale;
+
+            // Paint current context to computational frame buffer
+            processCtx.drawImage(video, 0, 0, gridWidth, gridHeight);
+
+            const imageData = processCtx.getImageData(0, 0, gridWidth, gridHeight);
+            const pixels = imageData.data;
+
+            // Clear display viewport context
+            renderCtx.fillStyle = '#ffffff';
+            renderCtx.fillRect(0, 0, renderCanvas.width, renderCanvas.height);
+            
+            renderCtx.font = `${glyphScale}px monospace`;
+            renderCtx.textBaseline = 'top';
+
+            // Loop through data array
+            for (let y = 0; y < gridHeight; y++) {
+                for (let x = 0; x < gridWidth; x++) {
+                    const idx = (y * gridWidth + x) * 4;
+                    const r = pixels[idx];
+                    const g = pixels[idx + 1];
+                    const b = pixels[idx + 2];
+                    
+                    // Human eye relative luminance index calculation
+                    const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
+                    
+                    // If pixel brightness is lower than white threshold, render it
+                    if (luminance < whiteCutoff) {
+                        renderCtx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+                        renderCtx.fillText(targetSymbol, x * glyphScale, y * glyphScale);
+                    }
+                    // Pixels passing the threshold are left completely empty (revealing background white)
+                }
+            }
+
+            // Frame monitoring metric computation
+            frameCount++;
+            const currentTime = performance.now();
+            if (currentTime - lastTime >= 1000) {
+                fpsCounter.textContent = `${frameCount} FPS`;
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+
+            animationFrameId = requestAnimationFrame(renderASCII);
+        }
+
+        // System Input Binding Event Listeners
+        videoUpload.addEventListener('change', (e) => {
+            const assetFile = e.target.files[0];
+            if (!assetFile) return;
+
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+            const sandboxURL = URL.createObjectURL(assetFile);
+            video.src = sandboxURL;
+            video.play();
+        });
+
+        video.addEventListener('play', () => { 
+            renderASCII(); 
+        });
+
+        resSlider.addEventListener('input', (e) => resVal.textContent = e.target.value);
+        sizeSlider.addEventListener('input', (e) => sizeVal.textContent = e.target.value);
+        whiteSlider.addEventListener('input', (e) => whiteVal.textContent = e.target.value);
+    </script>
+</body>
+</html>
