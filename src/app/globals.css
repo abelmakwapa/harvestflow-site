@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-dmsans);
+  --font-display: var(--font-fraunces);
+}
+
+@theme {
+  --color-cream: #f6f4e4;
+  --color-paper: #fcfbf2;
+  --color-ink: #15120d;
+  --color-clay: #9a9486;
+  --color-fog: #b8b1a4;
+  /* Accent: green at the SAME saturation/lightness the lavender used to be. */
+  --color-lav: #d3fbe4;
+  --color-lavdeep: #b6f1cf;
+  --color-leaf: #0e4a39;
+  --color-leafdeep: #0a3a2d;
+  --color-coral: #f0863c;
+  --color-line: #e4e1cf;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-lav);
+  color: var(--color-ink);
+}
+
+[data-reveal] { opacity: 0; }
+
+/* ---- Marquee ---- */
+.marquee { overflow: hidden; width: 100%; }
+.marquee__track { display: flex; width: max-content; animation: marquee 32s linear infinite; }
+.marquee--fast .marquee__track { animation-duration: 22s; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ---- Waveform ---- */
+.wave { display: flex; align-items: center; gap: 3px; height: 26px; }
+.wave span {
+  width: 3px; height: 100%; background: currentColor; border-radius: 9999px;
+  transform-origin: center; animation: wave 1.1s ease-in-out infinite;
+}
+@keyframes wave { 0%, 100% { transform: scaleY(0.28); } 50% { transform: scaleY(1); } }
+
+/* ---- Floating chips ---- */
+@keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.floaty { animation: floaty 6s ease-in-out infinite; }
+
+/* ---- Pulse ring ---- */
+@keyframes pulsering { 0% { transform: scale(1); opacity: 0.55; } 100% { transform: scale(1.9); opacity: 0; } }
+.pulse-ring { animation: pulsering 2.4s ease-out infinite; }
+
+/* ---- ASCII video matrix ---- */
+.ascii-frame {
+  position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 1rem;
+  overflow: hidden; background: var(--color-paper);
+}
+.ascii-source { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
+.ascii-process { display: none; }
+.ascii-render {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  background: var(--color-paper); opacity: 0; transition: opacity 0.45s ease;
+}
+.ascii-render.is-ready { opacity: 1; }
+.ascii-fallback {
+  position: absolute; inset: 0; display: grid; place-items: center; gap: 0.5rem; padding: 1rem;
+  text-align: center; color: var(--color-clay);
+  background: repeating-linear-gradient(45deg, rgba(0,0,0,0.03) 0 10px, transparent 10px 20px), var(--color-paper);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.ascii-fallback__glyphs { font-size: 0.7rem; letter-spacing: 0.15em; color: var(--color-fog); word-break: break-all; max-width: 22ch; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  [data-reveal] { opacity: 1 !important; transform: none !important; }
+  .marquee__track, .wave span, .floaty, .pulse-ring { animation: none !important; }
+}
+
+/* harvestflow-patch-v1: integrations logo-cloud -> thin, pale mint, ink text/icons */
+section.bg-leaf {
+  background-color: var(--color-lav) !important;
+  color: var(--color-ink) !important;
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+section.bg-leaf .pointer-events-none { display: none !important; }
+section.bg-leaf > p,
+section.bg-leaf .text-cream\/70 {
+  color: var(--color-ink) !important;
+  margin-bottom: 0.5rem !important;
+}
+section.bg-leaf .marquee__track span {
+  color: var(--color-ink) !important;
+  font-size: 1.125rem !important;
+  padding-left: 1.75rem !important;
+  padding-right: 1.75rem !important;
+}
