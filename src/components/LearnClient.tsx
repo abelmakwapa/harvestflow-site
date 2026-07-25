@@ -5,6 +5,7 @@ import Link from "next/link";
 import AsciiVideo from "@/components/AsciiVideo";
 import VideoPreview from "@/components/VideoPreview";
 import Reveal from "@/components/Reveal";
+import SettlementComparison from "@/components/SettlementComparison";
 import { ArrowRight, Check } from "lucide-react";
 
 export default function LearnClient({ slug }: { slug: string }) {
@@ -71,6 +72,8 @@ export default function LearnClient({ slug }: { slug: string }) {
           ))}
         </div>
       </section>
+
+      {p.slug === "farmers" && <SettlementComparison />}
 
       <section className="px-6 py-16 md:py-24">
         <div className="mx-auto max-w-5xl">
