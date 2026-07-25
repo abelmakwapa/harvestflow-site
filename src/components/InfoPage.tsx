@@ -3,6 +3,7 @@ import Reveal from "@/components/Reveal";
 import { pages } from "@/lib/pages";
 import type { PageContent } from "@/lib/pages";
 import Link from "next/link";
+import AppLink from "@/components/AppLink";
 
 export default function InfoPage({ slug, content }: { slug?: string; content?: PageContent }) {
   const c = content ?? (slug ? pages[slug] : undefined);
@@ -81,13 +82,20 @@ export default function InfoPage({ slug, content }: { slug?: string; content?: P
                 Start free on the marketplace, or talk to our team about an enterprise rollout tailored to your operation.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link
-                  href="/contact"
+                {slug === "quality-grading" ? <AppLink
+                  destination="grade"
+                  query={{ intent: "farmer" }}
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-lav px-6 py-3.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0"
+                >
+                  Grade produce
+                  <ArrowRight className="size-4" aria-hidden="true" />
+                </AppLink> : <Link
+                  href="/contact?source=website_sales&intent=enterprise"
                   className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-lav px-6 py-3.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0"
                 >
                   Talk to sales
                   <ArrowRight className="size-4" aria-hidden="true" />
-                </Link>
+                </Link>}
                 <Link
                   href="/pricing"
                   className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-cream bg-transparent px-6 py-3.5 text-sm font-semibold text-cream transition-colors hover:bg-cream hover:text-ink"

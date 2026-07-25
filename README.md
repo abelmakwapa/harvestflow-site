@@ -1,4 +1,17 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HarvestFlow marketing website
+
+The public website links into the HarvestFlow application and submits contact enquiries through a same-origin route handler to the HarvestFlow API.
+
+## Environment
+
+Copy `.env.example` to `.env.local` for local development. Production requires:
+
+```bash
+NEXT_PUBLIC_HARVESTFLOW_APP_URL=https://app.harvestflow.bw
+HARVESTFLOW_API_BASE_URL=https://api.harvestflow.bw/v1
+```
+
+`NEXT_PUBLIC_HARVESTFLOW_SUPPORT_EMAIL` is optional and must only be set to a real monitored mailbox. Never place secrets in a `NEXT_PUBLIC_` variable.
 
 ## Getting Started
 

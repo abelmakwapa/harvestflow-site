@@ -31,8 +31,8 @@ const helpCol: MegaColumn = {
   heading: "Get help",
   links: [
     { icon: LifeBuoy, title: "Help Center", sub: "Guides & FAQs", href: "/ecosystem/how-it-works" },
-    { icon: Headphones, title: "Talk to support", sub: "We reply fast", href: "/contact" },
-    { icon: Handshake, title: "Talk to sales", sub: "Enterprise plans", href: "/contact" },
+    { icon: Headphones, title: "Talk to support", sub: "We reply fast", href: "/contact?source=website_support" },
+    { icon: Handshake, title: "Talk to sales", sub: "Enterprise plans", href: "/contact?source=website_sales&intent=enterprise" },
   ],
 };
 

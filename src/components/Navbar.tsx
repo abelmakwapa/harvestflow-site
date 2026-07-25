@@ -196,7 +196,7 @@ export default function Navbar() {
 
           <div className="flex items-center gap-2">
             <Link
-              href="/contact"
+              href="/contact?source=website_partnership&intent=enterprise"
               onClick={closeAll}
               className="hidden items-center gap-2 rounded-2xl border-2 border-ink bg-lav px-4 py-2 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink active:translate-y-0 md:inline-flex"
             >
@@ -309,7 +309,7 @@ export default function Navbar() {
               );
             })}
             <Link
-              href="/contact"
+              href="/contact?source=website_partnership&intent=enterprise"
               onClick={closeAll}
               className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-lav px-4 py-2.5 text-sm font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
             >

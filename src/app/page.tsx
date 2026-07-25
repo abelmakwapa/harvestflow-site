@@ -8,9 +8,10 @@ import { useGSAP } from "@gsap/react";
 import AsciiVideo from "@/components/AsciiVideo";
 import VideoPreview from "@/components/VideoPreview";
 import Reveal from "@/components/Reveal";
+import AppLink from "@/components/AppLink";
+import { APP_PATHS } from "@/lib/app-links";
 import {
-  Sprout, Truck, ShoppingCart, Package, ShieldCheck, Star, Landmark, MapPin, Wallet,
-  CreditCard, Phone, Building2, Globe, Database, Smartphone, MessageSquare, ArrowRight,
+  Sprout, Truck, ShieldCheck, MapPin, ArrowRight,
   Check, type LucideIcon,
 } from "lucide-react";
 import {
@@ -114,10 +115,10 @@ export default function Home() {
               </Reveal>
               <Reveal delay={0.1}>
                 <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                  <Link href="/ecosystem" className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-lav px-6 py-3.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0">
+                  <AppLink destination="marketplace" analyticsEvent="marketplace_cta_clicked" className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-lav px-6 py-3.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0">
                     Open Marketplace <ArrowRight className="size-4" aria-hidden="true" />
-                  </Link>
-                  <Link href="/contact" className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-cream bg-cream px-6 py-3.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0">
+                  </AppLink>
+                  <Link href="/contact?source=website_enterprise&intent=enterprise" className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-cream bg-cream px-6 py-3.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0">
                     Explore Enterprise Partnerships
                   </Link>
                 </div>
@@ -344,9 +345,9 @@ export default function Home() {
             </Reveal>
             <Reveal delay={0.1}>
               <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                <Link href="/ecosystem" className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-lav px-6 py-3.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0">
-                  Open Marketplace <ArrowRight className="size-4" aria-hidden="true" />
-                </Link>
+                <AppLink destination="grade" query={{ intent: "farmer" }} className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-lav px-6 py-3.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0">
+                  Grade produce <ArrowRight className="size-4" aria-hidden="true" />
+                </AppLink>
                 <Link href="/contact" className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-transparent px-6 py-3.5 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream">
                   Talk to sales
                 </Link>
@@ -398,12 +399,18 @@ export default function Home() {
                         </li>
                       ))}
                     </ul>
-                    <a
-                      href={tier.highlighted ? "/contact" : "/#top"}
+                    {tier.highlighted ? <Link
+                      href="/contact?source=website_partnership&intent=enterprise"
                       className={`mt-8 inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink px-5 py-3 text-sm font-semibold transition-transform hover:-translate-y-0.5 active:translate-y-0 ${tier.highlighted ? "bg-lav text-ink" : "bg-transparent text-ink hover:bg-ink hover:text-cream"}`}
                     >
                       {tier.cta}
-                    </a>
+                    </Link> : <AppLink
+                      destination="login"
+                      query={{ returnTo: APP_PATHS.marketplace, intent: "buyer" }}
+                      className="mt-8 inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-transparent px-5 py-3 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 hover:bg-ink hover:text-cream active:translate-y-0"
+                    >
+                      {tier.cta}
+                    </AppLink>}
                   </div>
                 </Reveal>
               ))}
