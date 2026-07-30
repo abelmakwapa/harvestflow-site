@@ -15,6 +15,7 @@ async function fillContactForm(page: Page) {
 test.describe("contact form", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/contact?source=website_partnership&intent=enterprise&utm_source=campaign");
+    await expect(page.locator("form")).toHaveAttribute("data-hydrated", "true");
     await fillContactForm(page);
   });
 
@@ -95,11 +96,13 @@ test("support surface is keyboard accessible and fits a 320px viewport", async (
   await page.goto("/");
   const trigger = page.getByRole("button", { name: "Open HarvestFlow support options" });
 
+  await expect(trigger).toHaveAttribute("data-hydrated", "true");
+  await expect(trigger).toBeEnabled();
   await trigger.focus();
   await page.keyboard.press("Enter");
   const dialog = page.getByRole("dialog", { name: "How can we help?" });
   await expect(dialog).toBeVisible();
-  await expect(page.getByRole("link", { name: "Help centre" })).toBeFocused();
+  await expect(page.getByRole("link", { name: "Help centre", exact: true })).toBeFocused();
   const dialogBox = await dialog.boundingBox();
   expect(dialogBox).not.toBeNull();
   expect(dialogBox!.x).toBeGreaterThanOrEqual(0);

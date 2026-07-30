@@ -1,9 +1,20 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { pages } from "@/lib/pages";
+import { isPageSlug, pages } from "@/lib/pages";
 import InfoPage from "@/components/InfoPage";
+import { createPageMetadata } from "@/lib/site";
 
 const slugs = Object.keys(pages);
+const destinations: Partial<Record<keyof typeof pages, `/${string}`>> = {
+  about: "/company/about",
+  careers: "/company/careers",
+  blog: "/company/blog",
+  help: "/ecosystem/how-it-works",
+  "use-cases": "/ecosystem/use-cases",
+  "quality-grading": "/ecosystem/quality-grading",
+  security: "/infrastructure/security",
+  compliance: "/infrastructure/compliance",
+};
 
 export function generateStaticParams() {
   return slugs.map((page) => ({ page }));
@@ -15,9 +26,19 @@ export async function generateMetadata({
   params: Promise<{ page: string }>;
 }): Promise<Metadata> {
   const { page } = await params;
+  if (!isPageSlug(page)) {
+    return createPageMetadata({
+      title: "Page not found",
+      description: "The requested HarvestFlow page could not be found.",
+      path: "/",
+    });
+  }
   const c = pages[page];
-  if (!c) return { title: "Not found | HarvestFlow" };
-  return { title: `${c.title} | HarvestFlow`, description: c.intro };
+  return createPageMetadata({
+    title: c.title,
+    description: c.intro,
+    path: destinations[page] ?? `/${page}`,
+  });
 }
 
 export default async function Page({
@@ -26,17 +47,8 @@ export default async function Page({
   params: Promise<{ page: string }>;
 }) {
   const { page } = await params;
-  if (!pages[page]) notFound();
-  const destinations: Record<string, string> = {
-    about: "/company/about",
-    careers: "/company/careers",
-    blog: "/company/blog",
-    help: "/ecosystem/how-it-works",
-    "use-cases": "/ecosystem/use-cases",
-    "quality-grading": "/ecosystem/quality-grading",
-    security: "/infrastructure/security",
-    compliance: "/infrastructure/compliance",
-  };
-  if (destinations[page]) permanentRedirect(destinations[page]);
+  if (!isPageSlug(page)) notFound();
+  const destination = destinations[page];
+  if (destination) permanentRedirect(destination);
   return <InfoPage slug={page} />;
 }

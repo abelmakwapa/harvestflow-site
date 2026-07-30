@@ -24,6 +24,15 @@ test("accepts a bounded consented lead payload", () => {
   assert.equal(validateLeadSubmission(validLead()).ok, true);
 });
 
+test("normalizes user-entered values before forwarding", () => {
+  const result = validateLeadSubmission({ ...validLead(), email: " Buyer@Example.com ", company: " Kalahari Foods " });
+  assert.equal(result.ok, true);
+  if (result.ok) {
+    assert.equal(result.value.email, "buyer@example.com");
+    assert.equal(result.value.company, "Kalahari Foods");
+  }
+});
+
 test("rejects missing consent and invalid email", () => {
   assert.deepEqual(validateLeadSubmission({ ...validLead(), consent_acknowledged: false }), {
     ok: false,
@@ -39,6 +48,10 @@ test("rejects oversized fields", () => {
   assert.deepEqual(validateLeadSubmission({ ...validLead(), notes: "x".repeat(2001) }), {
     ok: false,
     field: "notes",
+  });
+  assert.deepEqual(validateLeadSubmission({ ...validLead(), submission_id: "x".repeat(101) }), {
+    ok: false,
+    field: "submission_id",
   });
 });
 

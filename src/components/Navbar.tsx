@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -55,6 +56,7 @@ function MegaSecondaryLink({ link, onNavigate }: { link: MegaLink; onNavigate: (
 }
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileSection, setMobileSection] = useState<string | null>(null);
@@ -116,6 +118,13 @@ export default function Navbar() {
     };
   }, [mobileOpen, openMenu]);
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = previousOverflow; };
+  }, [mobileOpen]);
+
   const activeEntry = openMenu ? navEntries.find((entry) => entry.label === openMenu && entry.mega) : null;
 
   const openDesktopMenu = (label: string) => {
@@ -158,6 +167,7 @@ export default function Navbar() {
                     key={entry.label}
                     href={entry.href}
                     onClick={closeAll}
+                    aria-current={pathname === entry.href || pathname.startsWith(`${entry.href}/`) ? "page" : undefined}
                     className="rounded-xl px-3 py-2 text-sm font-medium text-ink/75 transition-colors hover:text-ink focus-visible:bg-paper focus-visible:text-ink focus-visible:outline-none"
                   >
                     {entry.label}
@@ -175,7 +185,10 @@ export default function Navbar() {
                   aria-controls={`${menuId(entry.label)}-desktop`}
                   onMouseEnter={() => openDesktopMenu(entry.label)}
                   onFocus={() => openDesktopMenu(entry.label)}
-                  onClick={() => openDesktopMenu(entry.label)}
+                  onClick={() => {
+                    setOpenMenu((current) => current === entry.label ? null : entry.label);
+                    setMobileOpen(false);
+                  }}
                   onKeyDown={(event) => {
                     if (event.key === "ArrowDown") {
                       event.preventDefault();
@@ -259,7 +272,8 @@ export default function Navbar() {
         {mobileOpen && (
           <div
             id="mobile-navigation"
-            className="mt-2 max-h-[calc(100vh-7rem)] overflow-y-auto rounded-3xl border-2 border-ink bg-cream p-3 shadow-[0_24px_60px_-30px_rgba(0,0,0,0.5)] md:hidden"
+            aria-label="Mobile navigation"
+            className="mt-2 max-h-[calc(100dvh-7rem)] overflow-y-auto overscroll-contain rounded-3xl border-2 border-ink bg-cream p-3 shadow-[0_24px_60px_-30px_rgba(0,0,0,0.5)] md:hidden"
           >
             {navEntries.map((entry) => {
               const expanded = mobileSection === entry.label;
@@ -269,6 +283,7 @@ export default function Navbar() {
                     <Link
                       href={entry.href}
                       onClick={closeAll}
+                      aria-current={pathname === entry.href || pathname.startsWith(`${entry.href}/`) ? "page" : undefined}
                       className="min-w-0 flex-1 rounded-xl px-3 py-2.5 text-sm font-semibold text-ink/80 hover:bg-paper focus-visible:bg-paper focus-visible:outline-none"
                     >
                       {entry.label}
@@ -280,7 +295,7 @@ export default function Navbar() {
                         aria-expanded={expanded}
                         aria-controls={`${menuId(entry.label)}-mobile`}
                         onClick={() => setMobileSection((current) => current === entry.label ? null : entry.label)}
-                        className="grid size-10 place-items-center rounded-xl text-ink hover:bg-paper focus-visible:bg-paper focus-visible:outline-none"
+                        className="grid size-11 place-items-center rounded-xl text-ink hover:bg-paper focus-visible:bg-paper focus-visible:outline-none"
                       >
                         <ChevronDown className={`size-4 transition-transform ${expanded ? "rotate-180" : ""}`} aria-hidden="true" />
                       </button>

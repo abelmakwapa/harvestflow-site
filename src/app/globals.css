@@ -9,7 +9,7 @@
   --color-cream: #f6f4e4;
   --color-paper: #fcfbf2;
   --color-ink: #15120d;
-  --color-clay: #9a9486;
+  --color-clay: #655f54;
   --color-fog: #b8b1a4;
   /* Accent: green at the SAME saturation/lightness the lavender used to be. */
   --color-lav: #d3fbe4;
@@ -24,6 +24,24 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+body { min-width: 0; overflow-x: clip; }
+
+#main-content { min-width: 0; outline: none; }
+
+.skip-link {
+  position: fixed; left: 1rem; top: 1rem; z-index: 100;
+  transform: translateY(-180%); border: 2px solid var(--color-ink); border-radius: 0.75rem;
+  background: var(--color-lav); color: var(--color-ink); padding: 0.65rem 0.9rem;
+  font-weight: 700; transition: transform 0.15s ease;
+}
+.skip-link:focus { transform: translateY(0); }
+
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
 }
 
 ::selection {
@@ -84,7 +102,7 @@ html {
   html { scroll-behavior: auto; }
   [data-reveal] { opacity: 1 !important; transform: none !important; }
   .marquee__track, .wave span, .floaty, .pulse-ring { animation: none !important; }
-  .ascii-render { transition: none; }
+  .ascii-render, .skip-link { transition: none; }
 }
 
 /* harvestflow-patch-v1: integrations logo-cloud -> thin, pale mint, ink text/icons */

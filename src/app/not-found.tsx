@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <section className="px-6 py-32 text-center">
+    <main className="px-5 py-32 text-center sm:px-6">
       <p className="font-mono text-sm uppercase tracking-[0.25em] text-leaf">404</p>
       <h1 className="mt-4 font-display text-5xl font-semibold tracking-tight md:text-7xl">Off the map</h1>
       <p className="mx-auto mt-5 max-w-md text-lg text-clay">That page isn&rsquo;t part of the chain. Let&rsquo;s get you back to the marketplace.</p>
@@ -14,6 +14,6 @@ export default function NotFound() {
         Back home
         <ArrowRight className="size-4" aria-hidden="true" />
       </Link>
-    </section>
+    </main>
   );
 }

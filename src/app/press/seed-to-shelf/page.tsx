@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Download } from "lucide-react";
+import { createPageMetadata } from "@/lib/site";
 
 const PDF_URL = "/press/harvestflow-field-notes-july-2026.pdf";
 const PAGE_TITLES = [
@@ -24,10 +25,12 @@ const PAGE_TITLES = [
   "HarvestFlow Press Room",
 ];
 
-export const metadata: Metadata = {
-  title: "Seed to Shelf | HarvestFlow Field Notes",
+export const metadata: Metadata = createPageMetadata({
+  title: "Seed to Shelf — Field Notes 01",
   description: "Read HarvestFlow Field Notes issue 01, a 17-page guide to the connected agricultural supply chain.",
-};
+  path: "/company/press/seed-to-shelf",
+  noIndex: true,
+});
 
 export default function SeedToShelfPage() {
   return (
@@ -40,7 +43,7 @@ export default function SeedToShelfPage() {
           <div className="mt-9 flex flex-col justify-between gap-7 md:flex-row md:items-end">
             <div>
               <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-lav">Field Notes 01 / July 2026</p>
-              <h1 className="mt-4 font-display text-5xl font-semibold tracking-tight md:text-7xl">Seed to Shelf</h1>
+              <h1 className="mt-4 font-display text-4xl font-semibold tracking-tight sm:text-5xl md:text-7xl">Seed to Shelf</h1>
               <p className="mt-5 max-w-2xl text-lg leading-relaxed text-fog">
                 A field guide to how farmers, fleets, buyers, and suppliers move through one connected trade record.
               </p>
@@ -80,7 +83,7 @@ export default function SeedToShelfPage() {
                       className="h-auto w-full"
                     />
                   </div>
-                  <figcaption className="mt-3 flex items-center justify-between px-1 font-mono text-[10px] uppercase tracking-widest text-fog">
+                  <figcaption className="mt-3 flex flex-col gap-1 px-1 font-mono text-[10px] uppercase tracking-widest text-fog sm:flex-row sm:items-center sm:justify-between">
                     <span>{title}</span>
                     <span>{String(pageNumber).padStart(2, "0")} / 17</span>
                   </figcaption>
@@ -97,7 +100,7 @@ export default function SeedToShelfPage() {
           Download the 17-page PDF <Download className="size-4" aria-hidden="true" />
         </a>
         <p className="mx-auto mt-8 max-w-2xl text-xs leading-relaxed text-fog">
-          This edition retains artwork and photography from the supplied WARKITCHEN Issue 041 pages. Rights clearance and final attribution are required before public release.
+          Preview only. This edition retains artwork and photography from the supplied WARKITCHEN Issue 041 pages. Rights clearance and final attribution are required before this issue can be indexed or publicly released.
         </p>
       </section>
     </main>
