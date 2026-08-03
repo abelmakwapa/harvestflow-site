@@ -27,11 +27,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { page } = await params;
   if (!isPageSlug(page)) {
-    return createPageMetadata({
+    return {
       title: "Page not found",
       description: "The requested HarvestFlow page could not be found.",
-      path: "/",
-    });
+      alternates: { canonical: "/" },
+    };
   }
   const c = pages[page];
   return createPageMetadata({

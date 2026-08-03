@@ -114,9 +114,8 @@ export default function SupportMenu() {
           aria-expanded={open}
           aria-controls="support-dialog"
           data-hydrated={ready ? "true" : "false"}
-          disabled={!ready}
           onClick={() => setOpen((current) => !current)}
-          className="relative grid h-14 w-14 place-items-center rounded-full border-2 border-ink bg-lav text-ink shadow-[0_14px_34px_-10px_rgba(0,0,0,0.5)] transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink active:translate-y-0 disabled:cursor-wait disabled:opacity-70"
+          className="relative grid h-14 w-14 place-items-center rounded-full border-2 border-ink bg-lav text-ink shadow-[0_14px_34px_-10px_rgba(0,0,0,0.5)] transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink active:translate-y-0"
         >
           <Fingerprint className="h-6 w-6" aria-hidden="true" />
         </button>

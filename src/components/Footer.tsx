@@ -1,6 +1,7 @@
-import { Sprout, Mail, MessageCircle, Globe } from "lucide-react";
+import { Mail, MessageCircle, Globe } from "lucide-react";
 import { platforms } from "@/lib/content";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   const contactLinks = [
@@ -15,9 +16,7 @@ export default function Footer() {
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <div className="flex items-center gap-2.5">
-              <span className="grid h-8 w-8 place-items-center rounded-xl bg-cream text-ink">
-                <Sprout className="size-4" aria-hidden="true" />
-              </span>
+              <Image src="/logo-grayscale.svg" alt="" width={32} height={32} unoptimized className="size-8 rounded-xl" />
               <span className="font-display text-2xl font-semibold tracking-tight">HarvestFlow</span>
             </div>
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-fog">

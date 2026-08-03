@@ -11,6 +11,7 @@ These items require an owner or external evidence and cannot be completed safely
 
 - [ ] Obtain written rights clearance and final attribution for the WARKITCHEN-derived press artwork and photography. Until then, `/company/press` and `/company/press/seed-to-shelf` remain `noindex` and are excluded from the sitemap.
 - [ ] Confirm the production lead endpoint and monitored support mailbox. Production intentionally returns `503` when `HARVESTFLOW_API_URL` is absent rather than silently posting to localhost.
+- [ ] Confirm that the shared `/buyers.mp4` footage is accurate and approved for the Smallholder & Commercial Farmers context. It is intentionally restored through the ASCII treatment at the product owner's request.
 - [ ] Validate the claims in the content evidence register below. Remove, qualify, or cite every unsupported claim before launch.
 - [ ] Legal/privacy review of the privacy policy, terms, escrow language, regional availability, retention rules, and dispute wording for every launch jurisdiction.
 
@@ -20,7 +21,7 @@ These items require an owner or external evidence and cannot be completed safely
 - [x] Replaced empty or placeholder careers, blog, and help-centre content with truthful states and useful actions.
 - [x] Added useful success, validation, retry, rate-limit, and unavailable states to the contact journey.
 - [x] Added request-size enforcement, validation, normalization, bot handling, submission IDs, and production-safe API configuration.
-- [x] Removed the incorrect buyer video from the farmers profile and replaced it with a role-appropriate code-native visual.
+- [x] Restored the Smallholder & Commercial Farmers media card with the existing ASCII video treatment and retained a code-native fallback component.
 - [x] Moved the support control away from form controls and added hydration readiness, focus management, escape handling, a backdrop, and a mobile-safe dialog.
 - [x] Fixed 320px horizontal overflow in hero, pricing, role, and comparison grids.
 - [x] Added a skip link, visible focus indicators, one main landmark per route, field-level error relationships, larger touch targets, and reduced-motion support.

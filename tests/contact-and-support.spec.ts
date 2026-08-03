@@ -117,3 +117,16 @@ test("support surface is keyboard accessible and fits a 320px viewport", async (
   await trigger.dispatchEvent("click", { detail: 1 });
   await expect(dialog).toBeVisible();
 });
+
+test("homepage hydrates cleanly and the header blends into the hero", async ({ page }) => {
+  const hydrationWarnings: string[] = [];
+  page.on("console", (message) => {
+    if (message.text().includes("hydrated but some attributes")) hydrationWarnings.push(message.text());
+  });
+
+  await page.goto("/");
+  const trigger = page.getByRole("button", { name: "Open HarvestFlow support options" });
+  await expect(trigger).toHaveAttribute("data-hydrated", "true");
+  await expect(page.locator("header")).toHaveCSS("background-color", "rgb(21, 18, 13)");
+  expect(hydrationWarnings).toEqual([]);
+});

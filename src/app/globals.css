@@ -25,6 +25,7 @@ html {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: clip;
+  background: var(--color-cream);
 }
 
 body { min-width: 0; overflow-x: clip; }

@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { ChevronDown, Handshake, Menu, Sprout, X } from "lucide-react";
+import { ChevronDown, Handshake, Menu, X } from "lucide-react";
 import { navEntries, type MegaLink } from "@/lib/content";
 
 function menuId(label: string) {
@@ -137,7 +138,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 px-4 pt-4">
+    <header className={`sticky top-0 z-50 px-4 pt-4 ${pathname === "/" ? "bg-ink" : "bg-cream"}`}>
       <div
         ref={wrapRef}
         className="relative mx-auto max-w-6xl"
@@ -152,9 +153,7 @@ export default function Navbar() {
           className="flex items-center justify-between gap-4 rounded-[1.75rem] border-2 border-ink bg-cream px-4 py-3 shadow-[0_16px_44px_-18px_rgba(0,0,0,0.4)]"
         >
           <Link href="/#top" onClick={closeAll} className="flex items-center gap-2.5 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink">
-            <span className="grid h-8 w-8 place-items-center rounded-xl bg-ink text-cream">
-              <Sprout className="size-4" aria-hidden="true" />
-            </span>
+            <Image src="/logo-grayscale.svg" alt="" width={32} height={32} unoptimized className="size-8 rounded-xl" />
             <span className="font-display text-xl font-semibold tracking-tight">HarvestFlow</span>
           </Link>
 

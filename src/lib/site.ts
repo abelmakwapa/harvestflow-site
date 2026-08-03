@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 export const SITE_NAME = "HarvestFlow";
 export const SITE_DESCRIPTION =
   "A connected agricultural supply chain for farmers, fleets, suppliers, and enterprise buyers, with escrow-secured settlement and offline-first workflows.";
+export const SITE_FAVICON_PATH = "/favicon.svg";
+export const SITE_LOGO_PATH = "/logo-grayscale.svg";
+export const SOCIAL_IMAGE_PATH = "/opengraph-image";
 
 const DEFAULT_SITE_URL = "https://harvestflow.bw";
 
@@ -33,6 +36,19 @@ export function createPageMetadata({ title, description, path, noIndex = false }
     title,
     description,
     alternates: { canonical: path },
+    robots: noIndex
+      ? { index: false, follow: false }
+      : {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+            "max-video-preview": -1,
+          },
+        },
     openGraph: {
       type: "website",
       locale: "en_BW",
@@ -40,13 +56,14 @@ export function createPageMetadata({ title, description, path, noIndex = false }
       title,
       description,
       url: path,
+      images: [{ url: SOCIAL_IMAGE_PATH, width: 1200, height: 630, alt: `${SITE_NAME} — connected agricultural supply chains` }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: [SOCIAL_IMAGE_PATH],
     },
-    ...(noIndex ? { robots: { index: false, follow: false } } : {}),
   };
 }
 

@@ -117,7 +117,7 @@ export const segments: Segment[] = [
 
 export const audienceProfiles: AudienceProfile[] = [
   {
-    slug: "farmers", navLabel: "Farmers", icon: Sprout,
+    slug: "farmers", navLabel: "Farmers", icon: Sprout, video: "/buyers.mp4",
     title: "Smallholder & Commercial Farmers",
     summary: "Aggregate harvests, lock in algorithmically graded prices, and trade over USSD when the network drops.",
     ctaLabel: "Learn More",

@@ -1,10 +1,16 @@
+/* eslint-disable @next/next/no-img-element -- ImageResponse uses Satori, not the browser image pipeline. */
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 
 export const alt = "HarvestFlow — connected agricultural supply chains";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function OpenGraphImage() {
+export default async function OpenGraphImage() {
+  const logo = await readFile(join(process.cwd(), "public", "logo-grayscale.svg"), "base64");
+  const logoSource = `data:image/svg+xml;base64,${logo}`;
+
   return new ImageResponse(
     <div
       style={{
@@ -19,7 +25,8 @@ export default function OpenGraphImage() {
       }}
     >
       <div style={{ display: "flex", flexDirection: "column", maxWidth: "980px" }}>
-        <div style={{ color: "#d3fbe4", display: "flex", fontSize: 30, fontWeight: 700, letterSpacing: 5 }}>
+        <div style={{ alignItems: "center", color: "#d3fbe4", display: "flex", fontSize: 30, fontWeight: 700, letterSpacing: 5 }}>
+          <img src={logoSource} alt="" width={72} height={72} style={{ borderRadius: 16, marginRight: 24 }} />
           HARVESTFLOW
         </div>
         <div style={{ display: "flex", fontSize: 76, fontWeight: 700, lineHeight: 1.05, marginTop: 32 }}>

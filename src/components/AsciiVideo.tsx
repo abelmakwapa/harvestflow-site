@@ -172,6 +172,7 @@ export default function AsciiVideo({
     const onPause = () => stopLoop();
     const onLoadedData = () => {
       setErrored(false);
+      drawFrame();
       if (prefersReducedMotion) drawReducedMotionFrame();
       else if (isNearViewport) video.play().catch(() => {});
     };
@@ -200,10 +201,10 @@ export default function AsciiVideo({
         if (!isNearViewport) {
           video.pause();
           stopLoop();
-        } else if (prefersReducedMotion) {
-          drawReducedMotionFrame();
         } else {
-          video.play().catch(() => {});
+          if (video.readyState === HTMLMediaElement.HAVE_NOTHING) video.load();
+          if (prefersReducedMotion) drawReducedMotionFrame();
+          else video.play().catch(() => {});
         }
       },
       { rootMargin: "200px 0px", threshold: 0 },
