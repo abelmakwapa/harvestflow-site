@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import SectionLanding from "@/components/SectionLanding";
+import { createPageMetadata } from "@/lib/site";
 
-export const metadata: Metadata = { title: "B2B Pricing | HarvestFlow", description: "HarvestFlow pricing for commercial buyers, co-ops, and programs — free for farmers, buyers pay for completed value." };
+export const metadata: Metadata = createPageMetadata({ title: "B2B pricing", description: "HarvestFlow pricing for commercial buyers, co-ops, and programs — free for farmers, buyers pay for completed value.", path: "/pricing" });
 
 export default function PricingPage() {
   return <SectionLanding eyebrow="B2B Pricing" title="Farmers use it free. Buyers pay for completed value." intro="The buyer who reduces supply failure is the principal payer. We charge on a completed trade — after acceptance, fulfillment, dispute closure, and settlement — never on listings or applications." links={[

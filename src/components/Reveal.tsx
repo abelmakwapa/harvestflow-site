@@ -35,7 +35,7 @@ export default function Reveal({
     );
   }, []);
   return (
-    <div ref={ref} className={className}>
+    <div ref={ref} className={className} data-reveal="true">
       {children}
     </div>
   );

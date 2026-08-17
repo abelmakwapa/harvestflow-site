@@ -15,7 +15,7 @@ interface AsciiVideoProps {
   label?: string;
 }
 
-const FRAME_INTERVAL = 1000 / 30;
+const FRAME_INTERVAL = 1000 / 15;
 const OUTPUT_ASPECT_RATIO = 16 / 9;
 
 export default function AsciiVideo({
@@ -67,7 +67,8 @@ export default function AsciiVideo({
         return false;
       }
 
-      const outputWidth = Math.max(1, gridWidth);
+      const responsiveGridWidth = Math.round(wrap.clientWidth / 3.5);
+      const outputWidth = Math.max(64, Math.min(gridWidth, responsiveGridWidth));
       const outputHeight = Math.max(1, Math.round(outputWidth / OUTPUT_ASPECT_RATIO));
       const sourceWidth = video.videoWidth;
       const sourceHeight = video.videoHeight;
@@ -85,10 +86,14 @@ export default function AsciiVideo({
         sourceY = (sourceHeight - cropHeight) / 2;
       }
 
-      processCanvas.width = outputWidth;
-      processCanvas.height = outputHeight;
-      renderCanvas.width = outputWidth * glyphScale;
-      renderCanvas.height = outputHeight * glyphScale;
+      if (processCanvas.width !== outputWidth || processCanvas.height !== outputHeight) {
+        processCanvas.width = outputWidth;
+        processCanvas.height = outputHeight;
+      }
+      if (renderCanvas.width !== outputWidth * glyphScale || renderCanvas.height !== outputHeight * glyphScale) {
+        renderCanvas.width = outputWidth * glyphScale;
+        renderCanvas.height = outputHeight * glyphScale;
+      }
 
       processContext.drawImage(
         video,
@@ -167,6 +172,7 @@ export default function AsciiVideo({
     const onPause = () => stopLoop();
     const onLoadedData = () => {
       setErrored(false);
+      drawFrame();
       if (prefersReducedMotion) drawReducedMotionFrame();
       else if (isNearViewport) video.play().catch(() => {});
     };
@@ -180,6 +186,14 @@ export default function AsciiVideo({
       if (prefersReducedMotion) drawReducedMotionFrame();
       else if (isNearViewport) video.play().catch(() => {});
     };
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        video.pause();
+        stopLoop();
+      } else if (isNearViewport && !prefersReducedMotion) {
+        video.play().catch(() => {});
+      }
+    };
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -187,10 +201,10 @@ export default function AsciiVideo({
         if (!isNearViewport) {
           video.pause();
           stopLoop();
-        } else if (prefersReducedMotion) {
-          drawReducedMotionFrame();
         } else {
-          video.play().catch(() => {});
+          if (video.readyState === HTMLMediaElement.HAVE_NOTHING) video.load();
+          if (prefersReducedMotion) drawReducedMotionFrame();
+          else video.play().catch(() => {});
         }
       },
       { rootMargin: "200px 0px", threshold: 0 },
@@ -202,6 +216,7 @@ export default function AsciiVideo({
     video.addEventListener("loadeddata", onLoadedData);
     video.addEventListener("error", onError);
     reducedMotionQuery.addEventListener("change", onReducedMotionChange);
+    document.addEventListener("visibilitychange", onVisibilityChange);
 
     return () => {
       observer.disconnect();
@@ -210,6 +225,7 @@ export default function AsciiVideo({
       video.removeEventListener("loadeddata", onLoadedData);
       video.removeEventListener("error", onError);
       reducedMotionQuery.removeEventListener("change", onReducedMotionChange);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       video.pause();
       stopLoop();
     };
@@ -226,7 +242,7 @@ export default function AsciiVideo({
         muted
         loop
         playsInline
-        preload="metadata"
+        preload="none"
         aria-hidden="true"
         tabIndex={-1}
       />

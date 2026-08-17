@@ -68,3 +68,27 @@ test("rejects invalid form payloads without contacting the backend", async () =>
     globalThis.fetch = originalFetch;
   }
 });
+
+test("accepts honeypot submissions without contacting the backend", async () => {
+  const originalFetch = globalThis.fetch;
+  let called = false;
+  globalThis.fetch = async () => {
+    called = true;
+    return Response.json({ submitted: true });
+  };
+  try {
+    const response = await POST(request({ ...payload(), website: "https://spam.invalid" }));
+    assert.equal(response.status, 201);
+    assert.equal(called, false);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("rejects an oversized body even without a content-length header", async () => {
+  const response = await POST(new Request("http://localhost/api/leads", {
+    method: "POST",
+    body: JSON.stringify({ ...payload(), padding: "x".repeat(20_000) }),
+  }));
+  assert.equal(response.status, 413);
+});

@@ -1,4 +1,11 @@
 import InfoPage from "@/components/InfoPage";
+import { createPageMetadata } from "@/lib/site";
+
+export const metadata = createPageMetadata({
+  title: "Enterprise Pricing",
+  description: "HarvestFlow procurement workflows, supplier operations, reporting, traceability, and integrations for high-volume organizations.",
+  path: "/pricing/enterprise",
+});
 export default function Page() { return <InfoPage content={{ eyebrow: "B2B Pricing", title: "Enterprise Subscription", intro: "Workflow SaaS for high-volume buyers, co-ops, and programs — from $75 to $500 per site each month on an annual contract, plus a capped completed-trade fee. Partner services and integrations are priced separately.", blocks: [
   { heading: "Workflow SaaS", body: "Anchor buyers, co-ops, and programs pay for procurement workflow, supplier operations, reporting, and traceability — not farmers carrying a fixed platform cost.", bullets: ["$75–$500 per site / month", "Enterprise annual contract", "Supplier operations and reconciliation", "Dashboards, reporting, and traceability"] },
   { heading: "Completed-trade fee", body: "A single, visible fee on completed volume, shared with the buyer only by agreement. We never stack trade, logistics, and payment margins on the same farmer transaction.", bullets: ["1.0–2.0% of completed GMV", "Caps on large orders", "Published fee receipt", "Annual commitment after pilot"] },

@@ -25,6 +25,7 @@ type ValidationResult =
   | { ok: false; field?: string };
 
 const LIMITS: Record<string, number> = {
+  submission_id: 100,
   email: 254,
   company: 160,
   first_name: 80,
@@ -67,10 +68,36 @@ export function validateLeadSubmission(input: unknown): ValidationResult {
     const value = record[field];
     if (value !== undefined && (typeof value !== "string" || value.length > limit)) return { ok: false, field };
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(record.email)) || !SOURCES.has(String(record.source)) || !INTENTS.has(String(record.intent))) {
-    return { ok: false, field: !SOURCES.has(String(record.source)) ? "source" : !INTENTS.has(String(record.intent)) ? "intent" : "email" };
+  const email = String(record.email).trim();
+  const source = String(record.source).trim();
+  const intent = String(record.intent).trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !SOURCES.has(source) || !INTENTS.has(intent)) {
+    return { ok: false, field: !SOURCES.has(source) ? "source" : !INTENTS.has(intent) ? "intent" : "email" };
   }
   if (record.consent_acknowledged !== true) return { ok: false, field: "consent_acknowledged" };
 
-  return { ok: true, value: record as unknown as LeadSubmission };
+  const stringValue = (field: keyof LeadSubmission) => String(record[field] ?? "").trim();
+  const value: LeadSubmission = {
+    submission_id: stringValue("submission_id"),
+    email: stringValue("email").toLowerCase(),
+    company: stringValue("company"),
+    first_name: stringValue("first_name"),
+    last_name: stringValue("last_name"),
+    company_size: stringValue("company_size"),
+    expected_users: stringValue("expected_users"),
+    role: stringValue("role"),
+    use_case: stringValue("use_case"),
+    notes: stringValue("notes") || undefined,
+    source: stringValue("source") as LeadSubmission["source"],
+    intent: stringValue("intent") as AudienceIntent,
+    consent_acknowledged: true,
+    website: stringValue("website") || undefined,
+  };
+
+  for (const key of ["utm_source", "utm_medium", "utm_campaign"] as const) {
+    const campaignValue = stringValue(key);
+    if (campaignValue) value[key] = campaignValue;
+  }
+
+  return { ok: true, value };
 }

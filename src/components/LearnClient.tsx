@@ -4,6 +4,7 @@ import { audienceProfiles } from "@/lib/content";
 import Link from "next/link";
 import AsciiVideo from "@/components/AsciiVideo";
 import VideoPreview from "@/components/VideoPreview";
+import RoleVisual from "@/components/RoleVisual";
 import Reveal from "@/components/Reveal";
 import SettlementComparison from "@/components/SettlementComparison";
 import { ArrowRight, Check } from "lucide-react";
@@ -18,14 +19,14 @@ const audienceActions = {
 
 export default function LearnClient({ slug }: { slug: string }) {
   const p = audienceProfiles.find((x) => x.slug === slug);
-  if (!p) return null;
+  if (!p) throw new Error(`Unknown audience profile: ${slug}`);
   const Icon = p.icon;
   const usesNativeVideo = p.slug === "logistics" || p.slug === "suppliers";
   const action = audienceActions[p.slug as keyof typeof audienceActions];
 
   return (
-    <div className="bg-cream text-ink">
-      <section className="px-6 pb-12 pt-10 md:pt-14">
+    <main className="bg-cream text-ink">
+      <section className="px-5 pb-12 pt-10 sm:px-6 md:pt-14">
         <div className="mx-auto max-w-5xl">
           <Link href="/ecosystem" className="inline-flex items-center gap-2 font-mono text-sm text-clay transition-colors hover:text-ink">
             <span aria-hidden="true">{"<"}</span> Back to ecosystem
@@ -46,17 +47,15 @@ export default function LearnClient({ slug }: { slug: string }) {
 
           <Reveal delay={0.1} className="mt-10">
             <div className="overflow-hidden rounded-[1.75rem] border-2 border-ink bg-paper shadow-[0_24px_60px_-30px_rgba(0,0,0,0.45)]">
-              {usesNativeVideo ? (
-                <VideoPreview src={p.video} label={p.title} />
-              ) : (
-                <AsciiVideo src={p.video} symbol=">" label={p.title} />
-              )}
+              {!p.video ? <RoleVisual title={p.title} /> : usesNativeVideo
+                ? <VideoPreview src={p.video} label={p.title} />
+                : <AsciiVideo src={p.video} symbol=">" label={p.title} />}
             </div>
           </Reveal>
         </div>
       </section>
 
-      <section className="px-6 pb-8">
+      <section className="px-5 pb-8 sm:px-6">
         <div className="mx-auto max-w-5xl space-y-16">
           {p.detailSections.map((sec, i) => (
             <Reveal key={sec.heading}>
@@ -84,10 +83,10 @@ export default function LearnClient({ slug }: { slug: string }) {
 
       {p.slug === "farmers" && <SettlementComparison />}
 
-      <section className="px-6 py-16 md:py-24">
+      <section className="px-5 py-16 sm:px-6 md:py-24">
         <div className="mx-auto max-w-5xl">
           <Reveal>
-            <div className="rounded-[2rem] border-2 border-ink bg-ink p-10 text-cream md:p-14">
+            <div className="rounded-[2rem] border-2 border-ink bg-ink p-7 text-cream sm:p-10 md:p-14">
               <h2 className="max-w-2xl font-display text-3xl font-semibold tracking-tight md:text-4xl">
                 Ready to put {p.navLabel.toLowerCase()} on the chain?
               </h2>
@@ -126,6 +125,6 @@ export default function LearnClient({ slug }: { slug: string }) {
           </Reveal>
         </div>
       </section>
-    </div>
+    </main>
   );
 }

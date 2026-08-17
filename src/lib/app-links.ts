@@ -22,7 +22,9 @@ export interface AppLinkQuery {
   utm_campaign?: string;
 }
 
-const DEFAULT_APP_URL = "http://localhost:5173";
+const DEFAULT_APP_URL = process.env.NODE_ENV === "production"
+  ? "https://app.harvestflow.bw"
+  : "http://localhost:5173";
 const CAMPAIGN_KEYS = ["utm_source", "utm_medium", "utm_campaign"] as const;
 
 function applicationBaseUrl(): URL {
