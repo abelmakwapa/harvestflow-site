@@ -118,6 +118,23 @@ test("support surface is keyboard accessible and fits a 320px viewport", async (
   await expect(dialog).toBeVisible();
 });
 
+test("reduced-motion users see reveal content without animation", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/contact", { waitUntil: "domcontentloaded" });
+  await expect(page.locator('form[data-hydrated="true"]')).toBeVisible();
+  await page.waitForTimeout(100);
+
+  const revealStyles = await page.locator("[data-reveal]").evaluateAll((elements) =>
+    elements.map((element) => ({
+      opacity: getComputedStyle(element).opacity,
+      transform: getComputedStyle(element).transform,
+    })),
+  );
+
+  expect(revealStyles.length).toBeGreaterThan(0);
+  expect(revealStyles.every(({ opacity, transform }) => opacity === "1" && transform === "none")).toBe(true);
+});
+
 test("homepage hydrates cleanly and the header blends into the hero", async ({ page }) => {
   const hydrationWarnings: string[] = [];
   page.on("console", (message) => {
