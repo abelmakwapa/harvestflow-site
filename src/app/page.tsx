@@ -100,32 +100,37 @@ export default function Home() {
       <main id="top">
         {/* ------------------------------------------------------------- hero */}
         <section className="relative overflow-hidden bg-ink text-cream">
-          <div className="mx-auto grid max-w-6xl items-center gap-14 px-6 pb-24 pt-16 lg:grid-cols-2 lg:pb-32 lg:pt-24">
+          <div className="mx-auto grid max-w-6xl items-center gap-14 px-6 pb-20 pt-12 lg:grid-cols-2 lg:pb-24 lg:pt-16">
             <div>
               <Reveal>
-                <h1 className="font-display text-5xl font-semibold leading-[0.95] tracking-tight sm:text-6xl md:text-7xl">
-                  The Complete Agricultural Supply Chain.{" "}
-                  <span className="italic text-lav">From Seed to Shelf.</span>
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-lav">For farmers, buyers, suppliers &amp; transporters</p>
+                <h1 className="mt-4 font-display text-5xl font-semibold leading-[0.95] tracking-tight sm:text-6xl">
+                  Move produce from harvest to buyer.{" "}
+                  <span className="italic text-lav">Without losing track.</span>
                 </h1>
               </Reveal>
               <Reveal delay={0.05}>
-                <p className="mt-7 max-w-xl text-lg leading-relaxed text-fog">
-                  A centralized ecosystem connecting farmers, suppliers, logistics, and enterprise buyers. Powered by secure escrow, offline-first trading, and algorithmic quality control.
+                <p className="mt-6 max-w-xl text-lg leading-relaxed text-fog">
+                  HarvestFlow brings scattered supply, quality, delivery, and payment handoffs into one workflow—so every party knows what is available, what happens next, and when a trade is complete.
                 </p>
               </Reveal>
               <Reveal delay={0.1}>
-                <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                  <AppLink destination="marketplace" analyticsEvent="marketplace_cta_clicked" className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-lav px-6 py-3.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0">
-                    Open Marketplace <ArrowRight className="size-4" aria-hidden="true" />
-                  </AppLink>
-                  <Link href="/contact?source=website_enterprise&intent=enterprise" className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-cream bg-cream px-6 py-3.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0">
-                    Explore Enterprise Partnerships
-                  </Link>
+                <div className="mt-7 grid grid-cols-3 gap-3" aria-label="How HarvestFlow works">
+                  {[
+                    ["1", "List", "Add supply or demand."],
+                    ["2", "Match & move", "Agree the trade and delivery."],
+                    ["3", "Verify & pay", "Confirm, then release funds."],
+                  ].map(([number, title, description]) => (
+                    <div key={number} className="border-l border-cream/20 pl-3 first:border-l-0 first:pl-0">
+                      <p className="text-xs font-semibold text-lav">{number}. {title}</p>
+                      <p className="mt-1 text-xs leading-relaxed text-fog">{description}</p>
+                    </div>
+                  ))}
                 </div>
               </Reveal>
               <Reveal delay={0.15}>
-                <p className="mt-12 text-sm font-medium text-cream/80">Select one to see HarvestFlow in action.</p>
-                <div className="mt-4 flex flex-wrap gap-2.5">
+                <p className="mt-7 text-sm font-medium text-cream/80">Choose your role to see your workflow and next step.</p>
+                <div className="mt-3 flex flex-wrap gap-2.5">
                   {segments.map((s, i) => {
                     const on = i === active;
                     return (
@@ -133,12 +138,21 @@ export default function Home() {
                         key={s.key}
                         type="button"
                         onClick={() => setActive(i)}
+                        aria-pressed={on}
                         className={`rounded-full border-2 px-4 py-2 text-sm font-medium transition-colors ${on ? "border-cream bg-cream text-ink" : "border-cream/40 text-cream/85 hover:border-cream"}`}
                       >
                         {s.label}
                       </button>
                     );
                   })}
+                </div>
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                  <AppLink destination={seg.ctaDestination} analyticsEvent="marketplace_cta_clicked" className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-lav px-6 py-3.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0">
+                    {seg.ctaLabel} <ArrowRight className="size-4" aria-hidden="true" />
+                  </AppLink>
+                  <Link href="/ecosystem/how-it-works" className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-cream bg-transparent px-6 py-3.5 text-sm font-semibold text-cream transition-colors hover:bg-cream hover:text-ink">
+                    How it works
+                  </Link>
                 </div>
               </Reveal>
             </div>
@@ -375,7 +389,7 @@ export default function Home() {
           <div className="mx-auto max-w-4xl">
             <Reveal className="text-center">
               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-leaf">B2B pricing</p>
-              <h2 className="mt-4 font-display text-4xl font-semibold tracking-tight md:text-5xl">Enterprise supply chain management</h2>
+              <h2 className="mt-4 font-display text-4xl font-semibold tracking-tight md:text-5xl">Pricing built around completed trades</h2>
             </Reveal>
             <div className="mt-14 grid gap-6 md:grid-cols-2">
               {pricingTiers.map((tier, i) => (

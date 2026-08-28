@@ -1,6 +1,4 @@
 import InfoPage from "@/components/InfoPage";
-export default function Page() { return <InfoPage content={{ eyebrow: "B2B Pricing", title: "Compare plans", intro: "Both plans keep the core free and charge only on completed value. Choose core marketplace access or an enterprise workflow tailored to your operation.", blocks: [
-  { heading: "Basic Retailer — Free core", body: "Core marketplace access with manual purchasing and standard delivery bidding. You pay only a capped fee when a purchase settles.", bullets: ["$0 per month", "Verified marketplace access", "Manual order placement", "1.0–2.0% completed-trade fee, capped"] },
-  { heading: "Enterprise — SaaS + trade fee", body: "Workflow SaaS for buyers, co-ops, and programs, priority sourcing, and access to licensed partner services and integrations.", bullets: ["$75–$500 per site / month, annual", "1.0–2.0% completed GMV, capped", "Priority bulk harvests and quality thresholds", "Partner services, data / API, and integrations"] },
-  { heading: "How we price", body: "One service is priced once, visibly, and to the beneficiary. Illustrative ranges are pilot starting points, tested locally for willingness to pay, affordability, tax, and competition.", bullets: ["Revenue only on completed trades", "No stacked margins on one farmer transaction", "Total take capped on small orders", "A published fee receipt every time"] },
-] }} />; }
+import { pricingContent } from "@/lib/content";
+
+export default function Page() { return <InfoPage content={pricingContent.compare} />; }

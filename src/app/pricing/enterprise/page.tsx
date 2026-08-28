@@ -1,8 +1,4 @@
 import InfoPage from "@/components/InfoPage";
-export default function Page() { return <InfoPage content={{ eyebrow: "B2B Pricing", title: "Enterprise Subscription", intro: "Workflow SaaS for high-volume buyers, co-ops, and programs — from $75 to $500 per site each month on an annual contract, plus a capped completed-trade fee. Partner services and integrations are priced separately.", blocks: [
-  { heading: "Workflow SaaS", body: "Anchor buyers, co-ops, and programs pay for procurement workflow, supplier operations, reporting, and traceability — not farmers carrying a fixed platform cost.", bullets: ["$75–$500 per site / month", "Enterprise annual contract", "Supplier operations and reconciliation", "Dashboards, reporting, and traceability"] },
-  { heading: "Completed-trade fee", body: "A single, visible fee on completed volume, shared with the buyer only by agreement. We never stack trade, logistics, and payment margins on the same farmer transaction.", bullets: ["1.0–2.0% of completed GMV", "Caps on large orders", "Published fee receipt", "Annual commitment after pilot"] },
-  { heading: "Priority supply", body: "Secure earlier access to high-yield bulk harvests and quality-matched inventory.", bullets: ["Priority bulk access", "Minimum grading thresholds", "Automated aggregation matching"] },
-  { heading: "Partner services", body: "Access consented workflow data and digital servicing through licensed logistics, payment, insurance, and lending partners. Priced by usage as each capability activates.", bullets: ["Logistics workflow: $0.50–$2 / job or 2–4% of delivery value", "Payment orchestration: 0.10–0.35% net share", "Finance / insurance servicing after two seasons", "Purpose-limited, consented data only"] },
-  { heading: "System integration", body: "Connect procurement and inventory systems directly to HarvestFlow via a purpose-limited enterprise API.", bullets: ["Data / API from $250–$2,000 / month + usage", "Inventory API integration", "Compliance-ready exports", "Role-based team access"] },
-] }} />; }
+import { pricingContent } from "@/lib/content";
+
+export default function Page() { return <InfoPage content={pricingContent.enterprise} />; }

@@ -6,7 +6,10 @@ import {
 } from "lucide-react";
 
 export interface NavLink { label: string; href: string; }
-export interface Segment { key: string; label: string; icon: LucideIcon; preview: string; metric: string; metricLabel: string; bar: number; }
+export interface Segment {
+  key: string; label: string; icon: LucideIcon; preview: string; metric: string; metricLabel: string; bar: number;
+  ctaLabel: string; ctaDestination: "marketplace" | "grade";
+}
 export interface DetailSection { heading: string; body: string; bullets: string[]; }
 export interface AudienceProfile {
   slug: string; navLabel: string; icon: LucideIcon; title: string; video: string;
@@ -14,6 +17,7 @@ export interface AudienceProfile {
 }
 export interface InfrastructurePillar { icon: LucideIcon; title: string; description: string; }
 export interface PricingTier { title: string; price: string; cadence: string; features: string[]; highlighted: boolean; cta: string; }
+export interface PricingPageContent { eyebrow: string; title: string; intro: string; blocks: { heading: string; body: string; bullets: string[] }[]; }
 export interface Integration { name: string; icon: LucideIcon; }
 export interface Platform { label: string; icon: LucideIcon; }
 export interface MegaLink { icon: LucideIcon; title: string; sub?: string; href: string; badge?: string; }
@@ -86,8 +90,8 @@ export const navEntries: NavEntry[] = [
     href: "/pricing",
     mega: {
       primary: [
-        { icon: ShoppingCart, title: "Basic Retailer", sub: "Free forever", href: "/pricing/basic" },
-        { icon: BadgeCheck, title: "Enterprise Subscription", sub: "Custom, tailored pricing", href: "/pricing/enterprise", badge: "Popular" },
+        { icon: ShoppingCart, title: "Basic Retailer", sub: "Free core + trade fee", href: "/pricing/basic" },
+        { icon: BadgeCheck, title: "Enterprise", sub: "SaaS + completed-trade fee", href: "/pricing/enterprise", badge: "Popular" },
         { icon: Handshake, title: "Compare plans", sub: "Side by side", href: "/pricing/compare" },
       ],
       secondary: [helpCol],
@@ -109,10 +113,10 @@ export const navEntries: NavEntry[] = [
 ];
 
 export const segments: Segment[] = [
-  { key: "farmers", label: "Farmers", icon: Sprout, preview: "Aggregate your harvest and lock in premium, algorithmically graded prices.", metric: "+22%", metricLabel: "avg. price uplift", bar: 88 },
-  { key: "logistics", label: "Logistics", icon: Truck, preview: "Bid on live loads with temperature-weighted, Dijkstra-optimized routes.", metric: "98%", metricLabel: "on-time delivery", bar: 96 },
-  { key: "buyers", label: "B2B Buyers", icon: ShoppingCart, preview: "Source verified lots with end-to-end parcel tracking and QA matching.", metric: "≥90", metricLabel: "quality score", bar: 92 },
-  { key: "suppliers", label: "Suppliers", icon: Package, preview: "Reach farmer networks directly and close machinery deals in-app.", metric: "T+0", metricLabel: "digital receipts", bar: 80 },
+  { key: "farmers", label: "Farmers", icon: Sprout, preview: "Pool, grade, and list your harvest for buyers—even when you need to trade by USSD or SMS.", metric: "+22%", metricLabel: "avg. price uplift", bar: 88, ctaLabel: "Grade my produce", ctaDestination: "grade" },
+  { key: "logistics", label: "Logistics", icon: Truck, preview: "See available loads, bid with the job details upfront, and capture proof of delivery offline.", metric: "98%", metricLabel: "on-time delivery", bar: 96, ctaLabel: "Find delivery loads", ctaDestination: "marketplace" },
+  { key: "buyers", label: "B2B Buyers", icon: ShoppingCart, preview: "Find produce that meets your volume and quality needs, then track it through delivery.", metric: "≥90", metricLabel: "quality score", bar: 92, ctaLabel: "Source verified produce", ctaDestination: "marketplace" },
+  { key: "suppliers", label: "Suppliers", icon: Package, preview: "Put seed, fertiliser, and equipment in front of active farmers and keep each deal recorded.", metric: "T+0", metricLabel: "digital receipts", bar: 80, ctaLabel: "List farm inputs", ctaDestination: "marketplace" },
 ];
 
 export const audienceProfiles: AudienceProfile[] = [
@@ -173,9 +177,59 @@ export const infrastructurePillars: InfrastructurePillar[] = [
 ];
 
 export const pricingTiers: PricingTier[] = [
-  { title: "Basic Retailer (Free)", price: "$0", cadence: "/ month", highlighted: false, cta: "Start for free", features: ["Standard browsing and purchasing", "Standard listings", "Manual order placement", "Standard delivery bidding"] },
-  { title: "Enterprise Subscription (Premium)", price: "Custom", cadence: "/ tailored", highlighted: true, cta: "Partner With Us", features: ["Priority access to high-yield bulk harvests", "Guaranteed minimum Quality Grading Scores", "Automated aggregation matching", "Priority fleet allocation", "Direct API integration for inventory software"] },
+  { title: "Basic Retailer", price: "$0", cadence: "/ month", highlighted: false, cta: "Start for free", features: ["Core marketplace access", "Manual order placement", "Standard delivery bidding", "1.0–2.0% completed-trade fee, capped"] },
+  { title: "Enterprise", price: "$75–$500", cadence: "/ site / month, annual", highlighted: true, cta: "Partner With Us", features: ["Workflow SaaS for buyers, co-ops, and programs", "1.0–2.0% completed GMV, capped", "Priority bulk harvests and quality thresholds", "Partner services, data / API, and integrations"] },
 ];
+
+export const pricingContent: {
+  landing: { metadataDescription: string; title: string; intro: string; links: { title: string; description: string; href: string }[] };
+  basic: PricingPageContent;
+  enterprise: PricingPageContent;
+  compare: PricingPageContent;
+} = {
+  landing: {
+    metadataDescription: "HarvestFlow pricing for commercial buyers, co-ops, and programs — free for farmers, buyers pay for completed value.",
+    title: "Farmers use it free. Buyers pay for completed value.",
+    intro: "The buyer who reduces supply failure is the principal payer. We charge on a completed trade — after acceptance, fulfillment, dispute closure, and settlement — never on listings or applications.",
+    links: [
+      { title: "Basic Retailer", description: "Free core marketplace access for independent buying teams.", href: "/pricing/basic" },
+      { title: "Enterprise", description: "Workflow SaaS plus a capped completed-trade fee for high-volume buyers and co-ops.", href: "/pricing/enterprise" },
+      { title: "Compare plans", description: "Review both plans and the full revenue architecture side by side.", href: "/pricing/compare" },
+    ],
+  },
+  basic: {
+    eyebrow: "B2B Pricing",
+    title: "Basic Retailer",
+    intro: "$0 per month for core marketplace access. You pay only a small completed-trade fee when a purchase settles — never for browsing, listing, or placing orders.",
+    blocks: [
+      { heading: "Free core", body: "Everything an independent retailer needs to start sourcing verified smallholder supply, with no fixed platform cost.", bullets: ["Standard browsing and purchasing", "Verified listings and quality evidence", "Manual order placement", "Standard delivery bidding"] },
+      { heading: "Pay only on completed trades", body: "Revenue is monetizable only when buyer acceptance, fulfillment, dispute closure, and settlement are all complete. A capped fee applies per settled purchase, with a published fee receipt.", bullets: ["1.0–2.0% of completed order value", "Caps on large orders", "No fee on listings or placed orders", "Transparent fee receipt every time"] },
+      { heading: "Best for", body: "Teams testing the marketplace or buying at a manageable, hands-on volume.", bullets: ["Independent retailers", "Manual procurement workflows", "No subscription commitment"] },
+    ],
+  },
+  enterprise: {
+    eyebrow: "B2B Pricing",
+    title: "Enterprise — SaaS + trade fee",
+    intro: "Workflow SaaS for high-volume buyers, co-ops, and programs — from $75 to $500 per site each month on an annual contract, plus a capped completed-trade fee. Partner services and integrations are priced separately.",
+    blocks: [
+      { heading: "Workflow SaaS", body: "Anchor buyers, co-ops, and programs pay for procurement workflow, supplier operations, reporting, and traceability — not farmers carrying a fixed platform cost.", bullets: ["$75–$500 per site / month", "Enterprise annual contract", "Supplier operations and reconciliation", "Dashboards, reporting, and traceability"] },
+      { heading: "Completed-trade fee", body: "A single, visible fee on completed volume, shared with the buyer only by agreement. We never stack trade, logistics, and payment margins on the same farmer transaction.", bullets: ["1.0–2.0% of completed GMV", "Caps on large orders", "Published fee receipt", "Annual commitment after pilot"] },
+      { heading: "Priority supply", body: "Secure earlier access to high-yield bulk harvests and quality-matched inventory.", bullets: ["Priority bulk access", "Minimum grading thresholds", "Automated aggregation matching"] },
+      { heading: "Partner services", body: "Access consented workflow data and digital servicing through licensed logistics, payment, insurance, and lending partners. Priced by usage as each capability activates.", bullets: ["Logistics workflow: $0.50–$2 / job or 2–4% of delivery value", "Payment orchestration: 0.10–0.35% net share", "Finance / insurance servicing after two seasons", "Purpose-limited, consented data only"] },
+      { heading: "System integration", body: "Connect procurement and inventory systems directly to HarvestFlow via a purpose-limited enterprise API.", bullets: ["Data / API from $250–$2,000 / month + usage", "Inventory API integration", "Compliance-ready exports", "Role-based team access"] },
+    ],
+  },
+  compare: {
+    eyebrow: "B2B Pricing",
+    title: "Compare plans",
+    intro: "Both plans keep the core free and charge only on completed value. Choose core marketplace access or an enterprise workflow tailored to your operation.",
+    blocks: [
+      { heading: "Basic Retailer — Free core", body: "Core marketplace access with manual purchasing and standard delivery bidding. You pay only a capped fee when a purchase settles.", bullets: ["$0 per month", "Verified marketplace access", "Manual order placement", "1.0–2.0% completed-trade fee, capped"] },
+      { heading: "Enterprise — SaaS + trade fee", body: "Workflow SaaS for buyers, co-ops, and programs, priority sourcing, and access to licensed partner services and integrations.", bullets: ["$75–$500 per site / month, annual", "1.0–2.0% completed GMV, capped", "Priority bulk harvests and quality thresholds", "Partner services, data / API, and integrations"] },
+      { heading: "How we price", body: "One service is priced once, visibly, and to the beneficiary. Illustrative ranges are pilot starting points, tested locally for willingness to pay, affordability, tax, and competition.", bullets: ["Revenue only on completed trades", "No stacked margins on one farmer transaction", "Total take capped on small orders", "A published fee receipt every time"] },
+    ],
+  },
+};
 
 export const integrations: Integration[] = [
   { name: "M-Pesa", icon: Wallet }, { name: "Google Maps", icon: MapPin }, { name: "Stripe", icon: CreditCard },
