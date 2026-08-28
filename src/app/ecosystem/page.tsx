@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import SectionLanding from "@/components/SectionLanding";
+import { createPageMetadata } from "@/lib/site";
 
-export const metadata: Metadata = { title: "Ecosystem | HarvestFlow", description: "Explore every participant and workflow in the HarvestFlow ecosystem." };
+export const metadata: Metadata = createPageMetadata({ title: "Ecosystem", description: "Explore every participant and workflow in the HarvestFlow ecosystem.", path: "/ecosystem" });
 
 export default function EcosystemPage() {
   return <SectionLanding eyebrow="Ecosystem" title="Every link in the chain, connected." intro="Explore the dedicated tools and workflows for farmers, fleets, buyers, and suppliers." links={[

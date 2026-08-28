@@ -15,6 +15,7 @@ async function fillContactForm(page: Page) {
 test.describe("contact form", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/contact?source=website_partnership&intent=enterprise&utm_source=campaign");
+    await expect(page.locator("form")).toHaveAttribute("data-hydrated", "true");
     await fillContactForm(page);
   });
 
@@ -95,11 +96,13 @@ test("support surface is keyboard accessible and fits a 320px viewport", async (
   await page.goto("/");
   const trigger = page.getByRole("button", { name: "Open HarvestFlow support options" });
 
+  await expect(trigger).toHaveAttribute("data-hydrated", "true");
+  await expect(trigger).toBeEnabled();
   await trigger.focus();
   await page.keyboard.press("Enter");
   const dialog = page.getByRole("dialog", { name: "How can we help?" });
   await expect(dialog).toBeVisible();
-  await expect(page.getByRole("link", { name: "Help centre" })).toBeFocused();
+  await expect(page.getByRole("link", { name: "Help centre", exact: true })).toBeFocused();
   const dialogBox = await dialog.boundingBox();
   expect(dialogBox).not.toBeNull();
   expect(dialogBox!.x).toBeGreaterThanOrEqual(0);
@@ -113,4 +116,34 @@ test("support surface is keyboard accessible and fits a 320px viewport", async (
   await trigger.dispatchEvent("pointerup", { pointerType: "touch", isPrimary: true });
   await trigger.dispatchEvent("click", { detail: 1 });
   await expect(dialog).toBeVisible();
+});
+
+test("reduced-motion users see reveal content without animation", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/contact", { waitUntil: "domcontentloaded" });
+  await expect(page.locator('form[data-hydrated="true"]')).toBeVisible();
+  await page.waitForTimeout(100);
+
+  const revealStyles = await page.locator("[data-reveal]").evaluateAll((elements) =>
+    elements.map((element) => ({
+      opacity: getComputedStyle(element).opacity,
+      transform: getComputedStyle(element).transform,
+    })),
+  );
+
+  expect(revealStyles.length).toBeGreaterThan(0);
+  expect(revealStyles.every(({ opacity, transform }) => opacity === "1" && transform === "none")).toBe(true);
+});
+
+test("homepage hydrates cleanly and the header blends into the hero", async ({ page }) => {
+  const hydrationWarnings: string[] = [];
+  page.on("console", (message) => {
+    if (message.text().includes("hydrated but some attributes")) hydrationWarnings.push(message.text());
+  });
+
+  await page.goto("/");
+  const trigger = page.getByRole("button", { name: "Open HarvestFlow support options" });
+  await expect(trigger).toHaveAttribute("data-hydrated", "true");
+  await expect(page.locator("header")).toHaveCSS("background-color", "rgb(21, 18, 13)");
+  expect(hydrationWarnings).toEqual([]);
 });

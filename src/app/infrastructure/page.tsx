@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import SectionLanding from "@/components/SectionLanding";
+import { createPageMetadata } from "@/lib/site";
 
-export const metadata: Metadata = { title: "Infrastructure | HarvestFlow", description: "The trust, settlement, identity, and compliance rails behind HarvestFlow." };
+export const metadata: Metadata = createPageMetadata({ title: "Infrastructure", description: "The trust, settlement, identity, and compliance rails behind HarvestFlow.", path: "/infrastructure" });
 
 export default function InfrastructurePage() {
   return <SectionLanding eyebrow="Infrastructure" title="The rails behind every trade." intro="Explore the systems that secure settlement, accountability, identity, and compliance across the platform." links={[

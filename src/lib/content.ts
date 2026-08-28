@@ -12,7 +12,7 @@ export interface Segment {
 }
 export interface DetailSection { heading: string; body: string; bullets: string[]; }
 export interface AudienceProfile {
-  slug: string; navLabel: string; icon: LucideIcon; title: string; video: string;
+  slug: "farmers" | "logistics" | "buyers" | "suppliers"; navLabel: string; icon: LucideIcon; title: string; video?: string;
   summary: string; ctaLabel: string; detailIntro: string; detailSections: DetailSection[];
 }
 export interface InfrastructurePillar { icon: LucideIcon; title: string; description: string; }
@@ -78,7 +78,7 @@ export const navEntries: NavEntry[] = [
           heading: "Learn",
           links: [
             { icon: ShieldCheck, title: "Security overview", sub: "How escrow protects both sides", href: "/infrastructure/security" },
-            { icon: Scale, title: "Compliance", sub: "BIH & BAM ready", href: "/infrastructure/compliance" },
+            { icon: Scale, title: "Compliance", sub: "Reporting controls", href: "/infrastructure/compliance" },
           ],
         },
         helpCol,
@@ -147,13 +147,13 @@ export const audienceProfiles: AudienceProfile[] = [
   {
     slug: "buyers", navLabel: "B2B Buyers", icon: ShoppingCart, video: "/buyers.mp4",
     title: "B2B Retail Buyers",
-    summary: "Source pre-verified volume with end-to-end tracking and exports ready for BIH and BAM compliance.",
+    summary: "Source pre-verified volume with end-to-end tracking and configurable reporting exports.",
     ctaLabel: "Learn More",
     detailIntro: "Procurement teams source verified volume with the traceability and compliance paperwork institutions demand.",
     detailSections: [
       { heading: "Algorithmic QA matching", body: "Tell us the grade and volume you need; we match you to lots that already meet the spec, with evidence attached.", bullets: ["Spec-driven search", "Pre-verified suppliers", "Substitution suggestions"] },
       { heading: "End-to-end parcel tracking", body: "Follow every shipment on Google Maps from collection point to your dock, with ETAs that update as conditions change.", bullets: ["Live map tracking", "Milestone notifications", "Delivery confirmation"] },
-      { heading: "Institutional integration", body: "Plug HarvestFlow into your stack with exports and APIs ready for BIH and BAM reporting requirements.", bullets: ["CSV & API exports", "Audit-ready records", "Role-based access"] },
+      { heading: "Institutional integration", body: "Connect HarvestFlow to procurement workflows with configurable exports and purpose-limited APIs.", bullets: ["CSV and API exports", "Per-lot records", "Role-based access"] },
     ],
   },
   {
@@ -242,12 +242,12 @@ export const platforms: Platform[] = [
 ];
 
 export const traditionalPains: string[] = [
-  "Broker markups on every single lot", "7–14 day payout delays, every time",
+  "Broker markups can obscure the final price", "Manual payment timelines and invoice chasing",
   "No independent quality verification", "Paper receipts and no credit history",
 ];
 
 export const agriWins: string[] = [
-  "Same-day escrow release on confirmation", "Verified, algorithmic quality grades", "On-chain ledger that builds credit",
+  "Escrow release after confirmation", "Verified, algorithmic quality grades", "Transaction ledger that supports a financial history",
 ];
 
 export const ribbonEvents: string[] = [

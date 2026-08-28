@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import AsciiVideo from "@/components/AsciiVideo";
 import VideoPreview from "@/components/VideoPreview";
+import RoleVisual from "@/components/RoleVisual";
 import Reveal from "@/components/Reveal";
 import AppLink from "@/components/AppLink";
 import { APP_PATHS } from "@/lib/app-links";
@@ -61,12 +62,13 @@ export default function Home() {
   useEffect(() => {
     const els = audienceProfiles.map((p) => articleRefs.current[p.slug]).filter(Boolean) as HTMLElement[];
     if (!els.length) return;
-    const ratios = new Map<string, number>();
+    const ratios = new Map<(typeof audienceProfiles)[number]["slug"], number>();
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          const id = (e.target as HTMLElement).dataset.role ?? "";
-          ratios.set(id, e.isIntersecting ? e.intersectionRatio : 0);
+          const id = (e.target as HTMLElement).dataset.role;
+          const matchedSlug = audienceProfiles.find((profile) => profile.slug === id)?.slug;
+          if (matchedSlug) ratios.set(matchedSlug, e.isIntersecting ? e.intersectionRatio : 0);
         });
         let best = activeIdRef.current;
         let max = 0;
@@ -100,8 +102,8 @@ export default function Home() {
       <main id="top">
         {/* ------------------------------------------------------------- hero */}
         <section className="relative overflow-hidden bg-ink text-cream">
-          <div className="mx-auto grid max-w-6xl items-center gap-14 px-6 pb-20 pt-12 lg:grid-cols-2 lg:pb-24 lg:pt-16">
-            <div>
+          <div className="mx-auto grid max-w-6xl min-w-0 grid-cols-[minmax(0,1fr)] items-center gap-14 px-5 pb-20 pt-12 sm:px-6 lg:grid-cols-2 lg:pb-24 lg:pt-16">
+            <div className="min-w-0">
               <Reveal>
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-lav">For farmers, buyers, suppliers &amp; transporters</p>
                 <h1 className="mt-4 font-display text-5xl font-semibold leading-[0.95] tracking-tight sm:text-6xl">
@@ -158,7 +160,7 @@ export default function Home() {
             </div>
 
             <Reveal delay={0.1}>
-              <div className="relative">
+              <div className="relative min-w-0">
                 <FloatChip icon={Sprout} className="-left-5 -top-6" rotate="-8deg" delay="0s" />
                 <FloatChip icon={Truck} className="-right-6 top-12" rotate="10deg" delay="0.6s" />
                 <FloatChip icon={MapPin} className="-left-7 bottom-20" rotate="6deg" delay="1.1s" />
@@ -211,7 +213,7 @@ export default function Home() {
         {/* ------------------------------------------------ integrations band */}
         <section className="relative overflow-hidden bg-leaf py-12 text-cream">
           <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-coral/30 blur-2xl" />
-          <p className="mb-8 text-center text-xs font-semibold uppercase tracking-[0.3em] text-cream/70">Integrates with the tools you already run</p>
+          <p className="mb-8 text-center text-xs font-semibold uppercase tracking-[0.3em] text-cream/70">Integration roadmap</p>
           <div className="marquee">
             <div className="marquee__track">
               {[...integrations, ...integrations].map((it, i) => {
@@ -224,6 +226,9 @@ export default function Home() {
               })}
             </div>
           </div>
+          <p className="mx-auto mt-7 max-w-2xl px-5 text-center text-xs leading-relaxed text-cream/70">
+            Named services represent planned or configurable connections. Availability depends on the deployment and does not imply endorsement.
+          </p>
         </section>
 
         {/* ------------------------------------- ecosystem: Warp-style rail */}
@@ -237,7 +242,7 @@ export default function Home() {
               </p>
             </Reveal>
 
-            <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-16">
+            <div className="mt-12 grid min-w-0 grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-16">
               {/* sticky rail (NOT wrapped in a transform reveal: that breaks sticky) */}
               <nav className="hidden lg:sticky lg:top-24 lg:block lg:self-start" aria-label="Ecosystem roles">
                 <div className="relative flex flex-col gap-1">
@@ -264,7 +269,7 @@ export default function Home() {
               </nav>
 
               {/* stacked articles */}
-              <div className="flex flex-col gap-20">
+              <div className="flex min-w-0 flex-col gap-20">
                 {audienceProfiles.map((p) => {
                   const Icon = p.icon;
                   const usesNativeVideo = p.slug === "logistics" || p.slug === "suppliers";
@@ -278,7 +283,9 @@ export default function Home() {
                     >
                       <Reveal>
                         <div className="mb-7 overflow-hidden rounded-2xl border border-line bg-paper shadow-sm">
-                          {usesNativeVideo ? (
+                          {!p.video ? (
+                            <RoleVisual title={p.title} />
+                          ) : usesNativeVideo ? (
                             <VideoPreview src={p.video} label={p.title} />
                           ) : (
                             <AsciiVideo
@@ -301,13 +308,13 @@ export default function Home() {
                               </div>
                               <h3 className="max-w-2xl font-display text-2xl font-semibold tracking-tight md:text-3xl">{p.title}</h3>
                             </div>
-                            <a
+                            <Link
                               href={`/ecosystem/${p.slug}`}
                               className="mt-1 inline-flex shrink-0 items-center gap-1.5 rounded-md bg-ink px-3.5 py-2 font-mono text-sm font-medium text-cream transition-colors hover:bg-ink/90"
                             >
                               {p.ctaLabel}
                               <ArrowRight className="size-3.5" aria-hidden="true" />
-                            </a>
+                            </Link>
                           </div>
                           <p className="max-w-xl text-[15px] leading-relaxed text-clay md:text-base">{p.summary}</p>
                         </div>
@@ -385,16 +392,16 @@ export default function Home() {
         </section>
 
         {/* --------------------------------------------------------- pricing */}
-        <section id="pricing" className="scroll-mt-28 bg-cream px-6 pb-28 md:pb-36">
+        <section id="pricing" className="scroll-mt-28 bg-cream px-5 pb-28 sm:px-6 md:pb-36">
           <div className="mx-auto max-w-4xl">
             <Reveal className="text-center">
               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-leaf">B2B pricing</p>
               <h2 className="mt-4 font-display text-4xl font-semibold tracking-tight md:text-5xl">Pricing built around completed trades</h2>
             </Reveal>
-            <div className="mt-14 grid gap-6 md:grid-cols-2">
+            <div className="mt-14 grid min-w-0 grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
               {pricingTiers.map((tier, i) => (
-                <Reveal key={tier.title} delay={i * 0.05}>
-                  <div className={`relative flex h-full flex-col rounded-[1.75rem] bg-paper p-8 ${tier.highlighted ? "border-2 border-lavdeep" : "border-2 border-line"}`}>
+                <Reveal key={tier.title} delay={i * 0.05} className="min-w-0">
+                  <div className={`relative flex h-full min-w-0 flex-col rounded-[1.75rem] bg-paper p-6 sm:p-8 ${tier.highlighted ? "border-2 border-lavdeep" : "border-2 border-line"}`}>
                     {tier.highlighted && (
                       <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full border-2 border-ink bg-lav px-3 py-1 text-xs font-semibold text-ink">Most popular</span>
                     )}

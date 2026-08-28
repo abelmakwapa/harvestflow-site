@@ -3,13 +3,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Download, FileText, Newspaper, Sprout } from "lucide-react";
 import Reveal from "@/components/Reveal";
+import { createPageMetadata } from "@/lib/site";
 
 const PDF_URL = "/press/harvestflow-field-notes-july-2026.pdf";
 
-export const metadata: Metadata = {
-  title: "Press Room | HarvestFlow",
+export const metadata: Metadata = createPageMetadata({
+  title: "Press room",
   description: "HarvestFlow publications, company information, and media resources.",
-};
+  path: "/company/press",
+  noIndex: true,
+});
 
 export default function PressRoomPage() {
   return (
@@ -23,7 +26,7 @@ export default function PressRoomPage() {
               </span>
               <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-leaf">Press room</p>
             </div>
-            <h1 className="mt-6 max-w-4xl font-display text-5xl font-semibold leading-[0.98] tracking-tight md:text-7xl">
+            <h1 className="mt-6 max-w-4xl font-display text-4xl font-semibold leading-[0.98] tracking-tight sm:text-5xl md:text-7xl">
               Stories from a more connected food chain.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-clay">
@@ -105,7 +108,7 @@ export default function PressRoomPage() {
                   </div>
 
                   <p className="mt-auto pt-8 text-xs leading-relaxed text-clay">
-                    Rights clearance and final attribution for the retained source artwork and photography are required before public release.
+                    Preview only. Rights clearance and final attribution for the retained source artwork and photography are required before this issue can be indexed or publicly released.
                   </p>
                 </div>
               </div>

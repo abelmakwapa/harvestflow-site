@@ -19,11 +19,12 @@ export default function VideoPreview({ src, label, className = "" }: VideoPrevie
     let isNearViewport = false;
 
     const updatePlayback = () => {
-      if (isNearViewport && !reducedMotion.matches) video.play().catch(() => {});
+      if (isNearViewport && !reducedMotion.matches && document.visibilityState === "visible") video.play().catch(() => {});
       else video.pause();
     };
     const onLoadedData = () => updatePlayback();
     const onMotionPreferenceChange = () => updatePlayback();
+    const onVisibilityChange = () => updatePlayback();
     const observer = new IntersectionObserver(
       ([entry]) => {
         isNearViewport = entry.isIntersecting;
@@ -35,11 +36,13 @@ export default function VideoPreview({ src, label, className = "" }: VideoPrevie
     observer.observe(video);
     video.addEventListener("loadeddata", onLoadedData);
     reducedMotion.addEventListener("change", onMotionPreferenceChange);
+    document.addEventListener("visibilitychange", onVisibilityChange);
 
     return () => {
       observer.disconnect();
       video.removeEventListener("loadeddata", onLoadedData);
       reducedMotion.removeEventListener("change", onMotionPreferenceChange);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       video.pause();
     };
   }, [src]);
@@ -51,7 +54,8 @@ export default function VideoPreview({ src, label, className = "" }: VideoPrevie
       muted
       loop
       playsInline
-      preload="metadata"
+      preload="none"
+      role="img"
       aria-label={`${label} video`}
       className={`block aspect-video w-full bg-black object-cover ${className}`}
     />

@@ -14,12 +14,12 @@ function Wave() {
 
 export default function SettlementComparison() {
   return (
-    <section className="bg-cream px-6 pb-8 pt-16 md:pb-16 md:pt-24">
+    <section className="bg-cream px-5 pb-8 pt-16 sm:px-6 md:pb-16 md:pt-24">
       <div className="mx-auto max-w-5xl text-center">
         <Reveal>
-          <h2 className="font-display text-6xl font-semibold leading-[0.95] tracking-tight md:text-8xl">
+          <h2 className="font-display text-4xl font-semibold leading-[0.95] tracking-tight sm:text-5xl md:text-8xl">
             <span className="relative inline-block">
-              4x faster
+              Settlement
               <svg
                 className="pointer-events-none absolute -bottom-2 left-0 h-3 w-full text-lav md:h-4"
                 viewBox="0 0 300 12"
@@ -30,22 +30,22 @@ export default function SettlementComparison() {
                 <path d="M2 8 C 60 2, 120 12, 180 6 S 280 2, 298 7" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
               </svg>
             </span>{" "}
-            settlements
+            after verification
           </h2>
         </Reveal>
         <Reveal delay={0.05}>
           <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-clay">
-            Funds release the moment quality is verified — no waiting on paperwork, no chasing invoices, no broker float. Money moves at the speed of the harvest.
+            The workflow is designed to release funds once the agreed delivery and quality checks pass, while disputes keep the relevant funds protected.
           </p>
         </Reveal>
       </div>
 
-      <div className="mx-auto mt-16 grid max-w-6xl items-stretch gap-6 md:mt-24 lg:grid-cols-2">
+      <div className="mx-auto mt-16 grid min-w-0 max-w-6xl items-stretch gap-6 md:mt-24 lg:grid-cols-2">
         <Reveal>
-          <div className="flex h-full flex-col rounded-[2rem] border-2 border-ink bg-paper p-8 text-left md:p-10">
-            <p className="text-sm font-medium text-clay">Traditional trading</p>
-            <p className="mt-3 font-display text-6xl font-semibold tracking-tight md:text-7xl">14 days</p>
-            <p className="mt-2 text-clay">average time for a farmer to get paid</p>
+          <div className="flex h-full min-w-0 flex-col rounded-[2rem] border-2 border-ink bg-paper p-6 text-left sm:p-8 md:p-10">
+            <p className="text-sm font-medium text-clay">Manual settlement</p>
+            <p className="mt-3 font-display text-5xl font-semibold tracking-tight sm:text-6xl md:text-7xl">Uncertain</p>
+            <p className="mt-2 text-clay">payment timing depends on calls, invoices, and reconciliation</p>
             <div className="my-7 h-px w-full bg-line" />
             <ul className="space-y-3">
               {traditionalPains.map((pain) => (
@@ -61,7 +61,7 @@ export default function SettlementComparison() {
         </Reveal>
 
         <Reveal delay={0.05}>
-          <div className="relative flex min-h-[440px] flex-col justify-between overflow-hidden rounded-[2rem] border-2 border-ink bg-[radial-gradient(120%_120%_at_72%_12%,#3b2a18_0%,#15120d_62%)] p-8 text-left text-cream md:p-10">
+          <div className="relative flex min-h-[440px] min-w-0 flex-col justify-between overflow-hidden rounded-[2rem] border-2 border-ink bg-[radial-gradient(120%_120%_at_72%_12%,#3b2a18_0%,#15120d_62%)] p-6 text-left text-cream sm:p-8 md:p-10">
             <div className="pointer-events-none absolute inset-0 flex items-center">
               <div className="w-full -rotate-6">
                 <div className="marquee marquee--fast">
@@ -77,8 +77,8 @@ export default function SettlementComparison() {
             </div>
             <div className="relative z-10">
               <p className="text-sm font-medium text-cream/70">HarvestFlow</p>
-              <p className="mt-3 font-display text-6xl font-semibold tracking-tight md:text-7xl">Same day</p>
-              <p className="mt-2 text-cream/70">escrow-secured release, on confirmation</p>
+              <p className="mt-3 font-display text-5xl font-semibold tracking-tight sm:text-6xl md:text-7xl">On approval</p>
+              <p className="mt-2 text-cream/70">escrow release after the agreed checks pass</p>
             </div>
             <div className="relative z-10 flex justify-center py-6">
               <span className="inline-flex items-center gap-3 rounded-full border border-cream/40 bg-ink/40 px-5 py-2.5 text-cream">
